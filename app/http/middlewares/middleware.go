@@ -23,7 +23,6 @@ func Register(engine *gin.Engine) {
 
 	engine.Use(
 		RequestID(),                               // 为每个请求标记一个唯一性质的 ID
-		CheckHeader(),                             // 校验请求头
 		GinRecoveryWithZap(logger.Logger, true),   // err 和 panic 记录到日志（包括堆栈信息）
 		GinZap(logger.Logger, time.RFC3339, true), // 访问请求记录到日志
 		sessions.Sessions("SESSIONS", store),      // SESSION
