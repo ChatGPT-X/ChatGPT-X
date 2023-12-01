@@ -17,5 +17,12 @@ type User struct {
 }
 
 func (m *User) TableName() string {
-	return "x_user"
+	return "t_user"
 }
+
+const (
+	IsAdmin      = 1 // 管理员
+	IsNotAdmin   = 0 // 普通用户
+	IsDisable    = 1 // 禁用
+	IsNotDisable = 0 // 启用
+)
