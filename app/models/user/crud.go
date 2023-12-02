@@ -22,9 +22,9 @@ func (m *User) Update() (rowsAffected int64, err error) {
 	return result.RowsAffected, nil
 }
 
-// IsDisabled 判断用户是否被禁用，禁用返回 true，未禁用返回 false。
-func (m *User) IsDisabled() bool {
-	return m.IsDisable == IsDisable
+// IsDisable 判断用户是否被禁用，禁用返回 true，未禁用返回 false。
+func (m *User) IsDisable() bool {
+	return m.IsDisabled == IsDisabled
 }
 
 // Get 根据 ID 获取用户信息。

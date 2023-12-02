@@ -11,7 +11,7 @@ type User struct {
 	Password   string    `gorm:"column:password;NOT NULL"`                              // 密码
 	Email      string    `gorm:"column:email;NOT NULL"`                                 // 邮箱
 	IsAdmin    uint      `gorm:"column:is_admin;default:0;NOT NULL"`                    // 是否管理员:0-普通用户 1-管理员
-	IsDisable  uint      `gorm:"column:is_disable;default:0;NOT NULL"`                  // 是否禁用:0-启用 1-封禁
+	IsDisabled uint      `gorm:"column:is_disabled;default:0;NOT NULL"`                 // 是否禁用:0-启用 1-封禁
 	UpdateTime time.Time `gorm:"column:update_time;default:CURRENT_TIMESTAMP;NOT NULL"` // 修改时间
 	CreateTime time.Time `gorm:"column:create_time;default:CURRENT_TIMESTAMP;NOT NULL"` // 创建时间
 }
@@ -21,8 +21,8 @@ func (m *User) TableName() string {
 }
 
 const (
-	IsAdmin      = 1 // 管理员
-	IsNotAdmin   = 0 // 普通用户
-	IsDisable    = 1 // 禁用
-	IsNotDisable = 0 // 启用
+	IsAdmin       = 1 // 管理员
+	IsNotAdmin    = 0 // 普通用户
+	IsDisabled    = 1 // 禁用
+	IsNotDisabled = 0 // 启用
 )

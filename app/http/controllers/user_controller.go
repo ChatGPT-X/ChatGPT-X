@@ -69,7 +69,7 @@ func (u *UserController) DoLogin(c *gin.Context) {
 		return
 	}
 	// 检查用户是否被封禁
-	if userModel.IsDisabled() {
+	if userModel.IsDisable() {
 		appG.Response(http.StatusOK, e.ErrorUserIsDisabled, nil, nil)
 		return
 	}
