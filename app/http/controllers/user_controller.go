@@ -5,6 +5,7 @@ import (
 	"chatgpt_x/pkg/e"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 // UserController 用户控制器。
@@ -35,9 +36,10 @@ func (u *UserController) DoRegister(c *gin.Context) {
 	}
 	// 创建用户
 	userModel := user.Users{
-		Username: form.Username,
-		Email:    form.Email,
-		Password: form.Password,
+		Username:      form.Username,
+		Email:         form.Email,
+		Password:      form.Password,
+		LastLoginTime: time.Now(),
 	}
 	if err := userModel.Create(); err != nil {
 		appG.Response(http.StatusOK, e.ErrorUserCreateFail, err, nil)
@@ -76,6 +78,7 @@ func (u *UserController) DoLogin(c *gin.Context) {
 	// 保存用户信息到 Session
 	info := map[string]interface{}{
 		"user_id":  userModel.ID,
+		"is_admin": userModel.IsAdmin,
 		"email":    userModel.Email,
 		"username": userModel.Username,
 	}
