@@ -17,12 +17,12 @@ package main
 
 import "chatgpt_x/bootstrap"
 
-// init Service.
+// init Service。
 func init() {
 	bootstrap.Setup()
 }
 
-// main 入口函数.
+// main 入口函数。
 func main() {
 	Run(bootstrap.NewServe())
 }

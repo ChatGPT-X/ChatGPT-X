@@ -12,7 +12,7 @@ type UserController struct {
 	BaseController
 }
 
-// DoRegisterForm 注册表单。
+// DoRegisterForm 用户注册表单。
 type doRegisterForm struct {
 	Username string `form:"username" binding:"required"`
 	Email    string `form:"email" binding:"required"`
@@ -46,6 +46,7 @@ func (u *UserController) DoRegister(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
 }
 
+// doLoginForm 用户登录表单。
 type doLoginForm struct {
 	Username string `form:"username" binding:"required"`
 	Password string `form:"password" binding:"required"`
