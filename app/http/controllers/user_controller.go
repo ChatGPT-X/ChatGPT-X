@@ -76,7 +76,7 @@ func (u *UserController) DoLogin(c *gin.Context) {
 		return
 	}
 	// 保存用户信息到 Session
-	info := map[string]interface{}{
+	info := map[string]any{
 		"user_id":  userModel.ID,
 		"is_admin": userModel.IsAdmin,
 		"email":    userModel.Email,
