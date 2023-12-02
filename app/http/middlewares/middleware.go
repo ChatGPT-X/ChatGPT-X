@@ -20,7 +20,6 @@ func Register(engine *gin.Engine) {
 	})
 
 	engine.Use(
-		RequestID(),                          // 为每个请求标记一个唯一性质的 ID
 		Logger(),                             // 访问请求记录到日志
 		CustomRecovery(),                     // 恢复从 panic 中间件
 		sessions.Sessions("SESSIONS", store), // SESSION

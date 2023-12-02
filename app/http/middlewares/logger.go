@@ -61,8 +61,3 @@ func CustomRecovery() gin.HandlerFunc {
 		c.Next() // 继续执行后续的处理程序和中间件
 	}
 }
-
-// GetRequestID return Request-ID form http response header.
-func GetRequestID(c *gin.Context) string {
-	return c.Writer.Header().Get("request-id")
-}
