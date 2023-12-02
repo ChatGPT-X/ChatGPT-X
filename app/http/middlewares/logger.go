@@ -4,6 +4,7 @@ import (
 	"chatgpt_x/pkg/app"
 	"chatgpt_x/pkg/config"
 	"chatgpt_x/pkg/e"
+	"chatgpt_x/pkg/logger"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -47,7 +48,7 @@ func CustomRecovery() gin.HandlerFunc {
 		defer func() {
 			if err := recover(); err != nil {
 				// 记录错误和堆栈跟踪
-				c.Error(fmt.Errorf("[Panic Recovered]: %s\n%s\n", err, debug.Stack()))
+				logger.Error(fmt.Errorf("Panic Recovered: %s\n%s\n", err, debug.Stack()))
 				// 返回错误响应
 				errCode := e.ERROR
 				c.AbortWithStatusJSON(http.StatusInternalServerError, app.Response{
