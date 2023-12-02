@@ -5,7 +5,7 @@ import (
 )
 
 // 帐户表
-type User struct {
+type Users struct {
 	ID         uint      `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	Username   string    `gorm:"column:username;NOT NULL"`                              // 账号
 	Password   string    `gorm:"column:password;NOT NULL"`                              // 密码
@@ -16,8 +16,8 @@ type User struct {
 	CreateTime time.Time `gorm:"column:create_time;default:CURRENT_TIMESTAMP;NOT NULL"` // 创建时间
 }
 
-func (m *User) TableName() string {
-	return "t_user"
+func (m *Users) TableName() string {
+	return "t_users"
 }
 
 const (

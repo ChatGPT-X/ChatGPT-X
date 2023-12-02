@@ -34,7 +34,7 @@ func (u *UserController) DoRegister(c *gin.Context) {
 		return
 	}
 	// 创建用户
-	userModel := user.User{
+	userModel := user.Users{
 		Username: form.Username,
 		Email:    form.Email,
 		Password: form.Password,
