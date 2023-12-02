@@ -4,7 +4,7 @@ import "chatgpt_x/pkg/logger"
 
 var MsgFlags = map[int]string{
 	SUCCESS:                          "success",
-	ERROR:                            "fail",
+	ERROR:                            "系统内部未知错误",
 	InvalidParams:                    "请求参数错误",
 	ErrorUserIsExist:                 "用户已经存在",
 	ErrorUserCreateFail:              "用户创建失败",
@@ -24,8 +24,7 @@ func GetMsg(code int) string {
 // HasError any errors will be saved to the log.
 func HasError(err error) bool {
 	if err != nil {
-		sugar := logger.Logger.Sugar()
-		sugar.Errorf("An unpredictable error was caught: %s", err)
+		logger.Error(err)
 		return true
 	}
 	return false

@@ -1,34 +1,84 @@
 package logger
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/natefinch/lumberjack"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
+	"chatgpt_x/pkg/file"
+	"fmt"
+	"log"
+	"os"
+	"path/filepath"
+	"runtime"
 )
 
-var Logger *zap.Logger
+type Level int
 
-// InitZapLogger 初始化日志.
-func InitZapLogger(logFilePath string) {
-	if gin.IsDebugging() {
-		Logger, _ = zap.NewProduction()
-		return
+var (
+	F *os.File
+
+	DefaultPrefix      = ""
+	DefaultCallerDepth = 2
+
+	logger     *log.Logger
+	logPrefix  = ""
+	levelFlags = []string{"DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
+)
+
+const (
+	DEBUG Level = iota
+	INFO
+	WARNING
+	ERROR
+	FATAL
+)
+
+// Setup initialize the log instance
+func Setup(fileName, filePath string) {
+	var err error
+	F, err = file.MustOpen(fileName, filePath)
+	if err != nil {
+		log.Fatalf("logging.Setup err: %v", err)
 	}
-	writeSyncer := GetLogWriter(logFilePath)
-	encoder := zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
-	core := zapcore.NewCore(encoder, writeSyncer, zapcore.DebugLevel)
-	Logger = zap.New(core, zap.WithCaller(false))
+
+	logger = log.New(F, DefaultPrefix, log.LstdFlags)
 }
 
-// GetLogWriter .
-func GetLogWriter(filepath string) zapcore.WriteSyncer {
-	lumberJackLogger := &lumberjack.Logger{
-		Filename:   filepath,
-		MaxSize:    500,
-		MaxBackups: 10,
-		MaxAge:     30,
-		Compress:   true,
+// Debug output logs at debug level
+func Debug(v ...interface{}) {
+	setPrefix(DEBUG)
+	logger.Println(v)
+}
+
+// Info output logs at info level
+func Info(v ...interface{}) {
+	setPrefix(INFO)
+	logger.Println(v)
+}
+
+// Warn output logs at warn level
+func Warn(v ...interface{}) {
+	setPrefix(WARNING)
+	logger.Println(v)
+}
+
+// Error output logs at error level
+func Error(v ...interface{}) {
+	setPrefix(ERROR)
+	logger.Println(v)
+}
+
+// Fatal output logs at fatal level
+func Fatal(v ...interface{}) {
+	setPrefix(FATAL)
+	logger.Fatalln(v)
+}
+
+// setPrefix set the prefix of the log output
+func setPrefix(level Level) {
+	_, f, line, ok := runtime.Caller(DefaultCallerDepth)
+	if ok {
+		logPrefix = fmt.Sprintf("[%s][%s:%d]", levelFlags[level], filepath.Base(f), line)
+	} else {
+		logPrefix = fmt.Sprintf("[%s]", levelFlags[level])
 	}
-	return zapcore.AddSync(lumberJackLogger)
+
+	logger.SetPrefix(logPrefix)
 }

@@ -19,5 +19,5 @@ func SetupLogger() {
 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
 
 	// 初始化 输出日志
-	logger.InitZapLogger(filePath + "/server_out.log")
+	logger.Setup("/server_out.log", filePath)
 }
