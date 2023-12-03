@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"chatgpt_x/app/models/user"
+	"chatgpt_x/app/requests"
 	"chatgpt_x/pkg/e"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -13,18 +14,11 @@ type UserController struct {
 	BaseController
 }
 
-// DoRegisterForm 用户注册表单。
-type doRegisterForm struct {
-	Username string `form:"username" binding:"required"`
-	Email    string `form:"email" binding:"required"`
-	Password string `form:"password" binding:"required"`
-}
-
 // DoRegister 用户注册。
 func (u *UserController) DoRegister(c *gin.Context) {
 	appG := u.GetAppG(c)
 	// 表单验证
-	var form doRegisterForm
+	var form requests.ValidateDoRegister
 	if err := c.ShouldBind(&form); err != nil {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
@@ -48,18 +42,12 @@ func (u *UserController) DoRegister(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
 }
 
-// doLoginForm 用户登录表单。
-type doLoginForm struct {
-	Username string `form:"username" binding:"required"`
-	Password string `form:"password" binding:"required"`
-}
-
 // DoLogin 用户登录。
 func (u *UserController) DoLogin(c *gin.Context) {
 	appG := u.GetAppG(c)
 	session := u.GetSessions(c)
 	// 表单验证
-	var form doLoginForm
+	var form requests.ValidateDoLogin
 	if err := c.ShouldBind(&form); err != nil {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
@@ -76,13 +64,10 @@ func (u *UserController) DoLogin(c *gin.Context) {
 		return
 	}
 	// 保存用户信息到 Session
-	info := map[string]any{
-		"user_id":  userModel.ID,
-		"is_admin": userModel.IsAdmin,
-		"email":    userModel.Email,
-		"username": userModel.Username,
-	}
-	session.Set("user_info", info)
+	session.Set("user_id", userModel.ID)
+	session.Set("user_is_admin", userModel.IsAdmin)
+	session.Set("user_email", userModel.Email)
+	session.Set("user_username", userModel.Username)
 	_ = session.Save()
 	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
 }
