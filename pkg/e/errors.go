@@ -13,6 +13,7 @@ var MsgFlags = map[int]string{
 	ErrorUserIsDisabled:              "用户已被封禁",
 	ErrorAiModelIsExist:              "AI模型已经存在",
 	ErrorAiModelMapCreateFail:        "AI模型关系映射创建失败",
+	ErrorAiModelMapUpdateFail:        "AI模型关系映射更新失败",
 }
 
 // GetMsg get error information based on Code.

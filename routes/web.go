@@ -22,6 +22,7 @@ func Register(engine *gin.Engine) {
 		{
 			controller := controllers.AiModelMapController{}
 			aiModelMapGroup.POST("create", controller.Create) // 创建 AI 模型关系映射
+			aiModelMapGroup.POST("update", controller.Update) // 修改 AI 模型关系映射
 		}
 	}
 }

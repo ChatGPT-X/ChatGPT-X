@@ -11,4 +11,5 @@ const (
 	ErrorUserIsDisabled              = 10004 // 用户已被封禁
 	ErrorAiModelIsExist              = 10005 // AI模型已经存在
 	ErrorAiModelMapCreateFail        = 10006 // AI模型关系映射创建失败
+	ErrorAiModelMapUpdateFail        = 10007 // AI模型关系映射更新失败
 )
