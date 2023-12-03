@@ -13,4 +13,5 @@ const (
 	ErrorAiModelMapCreateFail        = 10006 // AI模型关系映射创建失败
 	ErrorAiModelMapUpdateFail        = 10007 // AI模型关系映射更新失败
 	ErrorAiModelMapSelectFail        = 10008 // AI模型关系映射查询失败
+	ErrorAiModelMapDeleteFail        = 10009 // AI模型关系映射删除失败
 )

@@ -20,3 +20,8 @@ type ValidateAiModelMapSelect struct {
 	Page     int64 `form:"page" binding:"numeric"`
 	PageSize int64 `form:"page_size" binding:"numeric"`
 }
+
+// ValidateAiModelMapDelete 验证 AI 模型关系映射表删除表单。
+type ValidateAiModelMapDelete struct {
+	ID uint `form:"id" binding:"required,numeric"`
+}

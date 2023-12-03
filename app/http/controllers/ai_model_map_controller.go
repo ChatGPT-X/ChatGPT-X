@@ -99,3 +99,24 @@ func (am *AiModelMapController) Select(c *gin.Context) {
 		Count:     data.Total,
 	})
 }
+
+// Delete 删除 AI 模型关系映射。
+func (am *AiModelMapController) Delete(c *gin.Context) {
+	appG := am.GetAppG(c)
+	// 表单验证
+	var form requests.ValidateAiModelMapDelete
+	if err := c.ShouldBind(&form); err != nil {
+		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
+		return
+	}
+	// 删除 AI 模型关系映射
+	aiModelMap := ai_model_map.AiModelMap{
+		ID: form.ID,
+	}
+	rows, err := aiModelMap.Delete()
+	if err != nil {
+		appG.Response(http.StatusOK, e.ErrorAiModelMapDeleteFail, err, nil)
+		return
+	}
+	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})
+}

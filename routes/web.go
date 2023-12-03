@@ -21,9 +21,10 @@ func Register(engine *gin.Engine) {
 		aiModelMapGroup := apiGroup.Group("aiModelMap").Use(middlewares.CheckAdmin())
 		{
 			controller := controllers.AiModelMapController{}
-			aiModelMapGroup.POST("create", controller.Create) // 创建 AI 模型关系映射
-			aiModelMapGroup.PUT("update", controller.Update)  // 修改 AI 模型关系映射
-			aiModelMapGroup.GET("select", controller.Select)  // 查询 AI 模型关系映射列表
+			aiModelMapGroup.POST("create", controller.Create)   // 创建 AI 模型关系映射
+			aiModelMapGroup.PUT("update", controller.Update)    // 修改 AI 模型关系映射
+			aiModelMapGroup.GET("select", controller.Select)    // 查询 AI 模型关系映射列表
+			aiModelMapGroup.DELETE("delete", controller.Delete) // 删除 AI 模型关系映射
 		}
 	}
 }
