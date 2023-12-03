@@ -71,3 +71,13 @@ func (u *UserController) DoLogin(c *gin.Context) {
 	_ = session.Save()
 	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
 }
+
+// Logout 用户登出。
+func (u *UserController) Logout(c *gin.Context) {
+	appG := u.GetAppG(c)
+	session := u.GetSessions(c)
+	// 销毁 Session
+	session.Clear()
+	_ = session.Save()
+	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
+}
