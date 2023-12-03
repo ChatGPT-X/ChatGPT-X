@@ -13,7 +13,8 @@ import (
 func CheckAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		if session.Get("user_is_admin").(uint) != user.IsAdmin {
+		isAdmin, ok := session.Get("user_is_admin").(uint)
+		if !ok || isAdmin != user.IsAdmin {
 			c.AbortWithStatusJSON(http.StatusOK, app.Response{
 				Code: e.ErrorAuthFail,
 				Msg:  e.GetMsg(e.ErrorAuthFail),
