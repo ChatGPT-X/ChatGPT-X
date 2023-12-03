@@ -3,8 +3,8 @@ package middlewares
 import (
 	"chatgpt_x/app/models/user"
 	"chatgpt_x/pkg/app"
+	"chatgpt_x/pkg/auth"
 	"chatgpt_x/pkg/e"
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -12,9 +12,19 @@ import (
 // CheckAdmin 验证是否为管理员。
 func CheckAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		isAdmin, ok := session.Get("user_is_admin").(uint)
-		if !ok || isAdmin != user.IsAdmin {
+		// 从 header 中获取 jwt token
+		jwt, err := auth.GetTokenFromHeader(c)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusOK, app.Response{
+				Code: e.ErrorAuthFail,
+				Msg:  e.GetMsg(e.ErrorAuthFail),
+				Data: nil,
+			})
+		}
+		// 从 jwt token 中获取用户权限
+		var claims *auth.Claims
+		claims, err = auth.ParseToken(jwt)
+		if err != nil || claims.IsAdmin != user.IsAdmin {
 			c.AbortWithStatusJSON(http.StatusOK, app.Response{
 				Code: e.ErrorAuthFail,
 				Msg:  e.GetMsg(e.ErrorAuthFail),
@@ -28,8 +38,18 @@ func CheckAdmin() gin.HandlerFunc {
 // CheckLogin 验证是否登录。
 func CheckLogin() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		if session.Get("user_id") == nil {
+		// 从 header 中获取 jwt token
+		jwt, err := auth.GetTokenFromHeader(c)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusOK, app.Response{
+				Code: e.ErrorAuthFail,
+				Msg:  e.GetMsg(e.ErrorAuthFail),
+				Data: nil,
+			})
+		}
+		var claims *auth.Claims
+		claims, err = auth.ParseToken(jwt)
+		if err != nil || claims.UserID == 0 {
 			c.AbortWithStatusJSON(http.StatusOK, app.Response{
 				Code: e.ErrorAuthFail,
 				Msg:  e.GetMsg(e.ErrorAuthFail),

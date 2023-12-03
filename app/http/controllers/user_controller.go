@@ -3,6 +3,7 @@ package controllers
 import (
 	"chatgpt_x/app/models/user"
 	"chatgpt_x/app/requests"
+	"chatgpt_x/pkg/auth"
 	"chatgpt_x/pkg/e"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -45,7 +46,6 @@ func (u *UserController) DoRegister(c *gin.Context) {
 // DoLogin 用户登录。
 func (u *UserController) DoLogin(c *gin.Context) {
 	appG := u.GetAppG(c)
-	session := u.GetSessions(c)
 	// 表单验证
 	var form requests.ValidateDoLogin
 	if err := c.ShouldBind(&form); err != nil {
@@ -63,21 +63,24 @@ func (u *UserController) DoLogin(c *gin.Context) {
 		appG.Response(http.StatusOK, e.ErrorUserIsDisabled, nil, nil)
 		return
 	}
-	// 保存用户信息到 Session
-	session.Set("user_id", userModel.ID)
-	session.Set("user_is_admin", userModel.IsAdmin)
-	session.Set("user_email", userModel.Email)
-	session.Set("user_username", userModel.Username)
-	_ = session.Save()
+	// 生成 Token 授权
+	jwt, err := auth.GenerateToken(auth.CustomClaims{
+		UserID:   userModel.ID,
+		IsAdmin:  userModel.IsAdmin,
+		Username: userModel.Username,
+		Email:    userModel.Email,
+	})
+	if err != nil {
+		appG.Response(http.StatusOK, e.ErrorGenerateTokenFail, err, nil)
+		return
+	}
+	c.Header("Authorization", "Bearer "+jwt)
 	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
 }
 
 // Logout 用户登出。
 func (u *UserController) Logout(c *gin.Context) {
 	appG := u.GetAppG(c)
-	session := u.GetSessions(c)
-	// 销毁 Session
-	session.Clear()
-	_ = session.Save()
+	c.Header("Authorization", "")
 	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
 }

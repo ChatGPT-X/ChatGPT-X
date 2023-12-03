@@ -10,7 +10,8 @@ func Setup() {
 	gin.SetMode(getMode())
 	autoLoader(
 		config.Initialize, // Configs initialize file.
-		SetupMySQL,        // PostgreSQL
+		SetupJWT,          // JWT
+		SetupMySQL,        // MySQL
 		SetupRedis,        // Redis
 		SetupLogger,       // Logs
 	)
