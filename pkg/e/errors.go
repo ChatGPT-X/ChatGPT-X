@@ -14,6 +14,7 @@ var MsgFlags = map[int]string{
 	ErrorAiModelIsExist:              "AI模型已经存在",
 	ErrorAiModelMapCreateFail:        "AI模型关系映射创建失败",
 	ErrorAiModelMapUpdateFail:        "AI模型关系映射更新失败",
+	ErrorAiModelMapSelectFail:        "AI模型关系映射查询失败",
 }
 
 // GetMsg get error information based on Code.

@@ -3,8 +3,10 @@ package controllers
 import (
 	"chatgpt_x/app/models/ai_model_map"
 	"chatgpt_x/app/requests"
+	"chatgpt_x/pkg/app"
 	"chatgpt_x/pkg/e"
 	"github.com/gin-gonic/gin"
+	paginator "github.com/yafeng-Soong/gorm-paginator"
 	"net/http"
 )
 
@@ -67,4 +69,33 @@ func (am *AiModelMapController) Update(c *gin.Context) {
 		return
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})
+}
+
+// Select 查询 AI 模型关系映射。
+func (am *AiModelMapController) Select(c *gin.Context) {
+	appG := am.GetAppG(c)
+	// 表单验证
+	var form requests.ValidateAiModelMapSelect
+	if err := c.ShouldBind(&form); err != nil {
+		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
+		return
+	}
+	// 设置默认值
+	SetDefaultValue(&form.Page, 1)
+	SetDefaultValue(&form.PageSize, 20)
+	// 查询 AI 模型关系映射
+	aiModelMap := ai_model_map.AiModelMap{}
+	pageData, err := aiModelMap.Select(form.Page, form.PageSize)
+	if err != nil {
+		appG.Response(http.StatusOK, e.ErrorAiModelMapSelectFail, err, nil)
+		return
+	}
+	data := pageData.(paginator.Page[ai_model_map.AiModelMap])
+	appG.Response(http.StatusOK, e.SUCCESS, nil, app.ResponseDataList{
+		List:      data.Data,
+		Page:      data.CurrentPage,
+		PageSize:  data.PageSize,
+		PageCount: data.Pages,
+		Count:     data.Total,
+	})
 }

@@ -10,28 +10,20 @@ type Gin struct {
 	C *gin.Context
 }
 
-// Response 返回的数据格式.
+// Response 基础返回的数据格式。
 type Response struct {
 	Code int         `json:"code"`
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
 }
 
-// PageDetail 分页详情.
-type PageDetail struct {
-	Page         int
-	PageSize     int
-	TotalPages   int
-	TotalResults int
-}
-
-// ResponseDataList 返回 List 专用的数据格式.
+// ResponseDataList 返回 List 专用的数据格式。
 type ResponseDataList struct {
 	List      interface{} `json:"list"`
-	Page      int         `json:"page"`
-	PageSize  int         `json:"page_size"`
-	PageCount int         `json:"page_count"`
-	Count     int         `json:"count"`
+	Page      int64       `json:"page"`       // 当前页数
+	PageSize  int64       `json:"page_size"`  // 每页的数据条数
+	PageCount int64       `json:"page_count"` // 总共有多少页
+	Count     int64       `json:"count"`      // 总共有多少条数据
 }
 
 // Response 设置 gin.JSON.

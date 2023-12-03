@@ -14,3 +14,9 @@ type ValidateAiModelMapUpdate struct {
 	AiName      string `form:"ai_name" binding:"required,min=2,max=30"`
 	IsDisabled  uint   `form:"is_disabled" binding:"oneof=0 1"`
 }
+
+// ValidateAiModelMapSelect 验证 AI 模型关系映射表查询表单。
+type ValidateAiModelMapSelect struct {
+	Page     int64 `form:"page" binding:"numeric"`
+	PageSize int64 `form:"page_size" binding:"numeric"`
+}
