@@ -15,7 +15,7 @@ func (m *Users) Create() (err error) {
 
 // Update 更新用户资料。
 func (m *Users) Update() (rowsAffected int64, err error) {
-	result := model.DB.Save(&m)
+	result := model.DB.Select("*").Updates(&m)
 	if err = model.DB.Error; err != nil {
 		return 0, err
 	}
