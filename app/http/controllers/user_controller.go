@@ -24,7 +24,7 @@ func (u *UserController) DoRegister(c *gin.Context) {
 		return
 	}
 	// 检查用户名是否重复
-	if user.HasByUsername(form.Username) {
+	if user.HasByUsernameExist(form.Username) {
 		appG.Response(http.StatusOK, e.ErrorUserIsExist, nil, nil)
 		return
 	}

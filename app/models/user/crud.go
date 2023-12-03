@@ -36,8 +36,8 @@ func Get(id int) (Users, error) {
 	return Users{}, nil
 }
 
-// HasByUsername 通过 Username 判断用户是否存在，存在返回 true，不存在返回 false。
-func HasByUsername(username string) bool {
+// HasByUsernameExist 通过 Username 判断用户是否存在，存在返回 true，不存在返回 false。
+func HasByUsernameExist(username string) bool {
 	var user Users
 	var count int64
 	model.DB.Model(user).Where("username = ?", username).Count(&count)
