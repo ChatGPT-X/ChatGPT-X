@@ -3,6 +3,7 @@ package app
 import (
 	"chatgpt_x/pkg/e"
 	"chatgpt_x/pkg/logger"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,7 +30,7 @@ type ResponseDataList struct {
 // Response 设置 gin.JSON.
 func (g *Gin) Response(httpCode, errCode int, err error, data interface{}) {
 	if err != nil {
-		logger.Error("Response: httpCode: %d, errCode: %d, err: %v, data: %v\n", httpCode, errCode, err, data)
+		logger.Error(fmt.Sprintf("Response: httpCode: %d, errCode: %d, err: %v, data: %v\n", httpCode, errCode, err, data))
 	}
 	g.C.JSON(httpCode, Response{
 		Code: errCode,
