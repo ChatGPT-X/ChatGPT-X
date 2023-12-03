@@ -6,10 +6,13 @@ var MsgFlags = map[int]string{
 	SUCCESS:                          "success",
 	ERROR:                            "系统内部未知错误",
 	InvalidParams:                    "请求参数错误",
+	ErrorAuthFail:                    "认证失败或权限不足",
 	ErrorUserIsExist:                 "用户已经存在",
 	ErrorUserCreateFail:              "用户创建失败",
 	ErrorIncorrectUsernameOrPassword: "用户名或密码错误",
 	ErrorUserIsDisabled:              "用户已被封禁",
+	ErrorAiModelIsExist:              "AI模型已经存在",
+	ErrorAiModelMapCreateFail:        "AI模型关系映射创建失败",
 }
 
 // GetMsg get error information based on Code.
