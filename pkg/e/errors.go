@@ -13,6 +13,7 @@ var MsgFlags = map[int]string{
 	ErrorIncorrectUsernameOrPassword: "用户名或密码错误",
 	ErrorGenerateTokenFail:           "生成token失败",
 	ErrorUserIsDisabled:              "用户已被封禁",
+	ErrorUserDeleteFail:              "用户删除失败",
 	ErrorAiModelIsExist:              "AI模型已经存在",
 	ErrorAiModelMapCreateFail:        "AI模型关系映射创建失败",
 	ErrorAiModelMapUpdateFail:        "AI模型关系映射更新失败",

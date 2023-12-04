@@ -24,6 +24,12 @@ func Register(engine *gin.Engine) {
 		// 后台接口
 		adminGroup := apiGroup.Group("admin", middlewares.CheckAdmin())
 		{
+			// 用户管理
+			userGroup := adminGroup.Group("user")
+			{
+				controller := controllers.UserController{}
+				userGroup.DELETE("delete", controller.Delete) // 删除用户
+			}
 			// AI 模型关系映射
 			aiModelMapGroup := adminGroup.Group("aiModelMap")
 			{

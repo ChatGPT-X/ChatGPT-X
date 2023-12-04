@@ -22,6 +22,15 @@ func (m *Users) Update() (rowsAffected int64, err error) {
 	return result.RowsAffected, nil
 }
 
+// Delete 删除用户。
+func (m *Users) Delete() (rowsAffected int64, err error) {
+	result := model.DB.Delete(&m)
+	if err = result.Error; err != nil {
+		return 0, err
+	}
+	return result.RowsAffected, nil
+}
+
 // IsDisable 判断用户是否被禁用，禁用返回 true，未禁用返回 false。
 func (m *Users) IsDisable() bool {
 	return m.IsDisabled == IsDisabled

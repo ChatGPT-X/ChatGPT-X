@@ -84,3 +84,24 @@ func (u *UserController) Logout(c *gin.Context) {
 	c.Header("Authorization", "")
 	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
 }
+
+// Delete 删除用户。
+func (u *UserController) Delete(c *gin.Context) {
+	appG := u.GetAppG(c)
+	// 表单验证
+	var form requests.ValidateUserDelete
+	if err := c.ShouldBind(&form); err != nil {
+		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
+		return
+	}
+	// 删除用户
+	userModel := user.Users{
+		ID: form.ID,
+	}
+	rows, err := userModel.Delete()
+	if err != nil {
+		appG.Response(http.StatusOK, e.ErrorUserDeleteFail, err, nil)
+		return
+	}
+	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})
+}
