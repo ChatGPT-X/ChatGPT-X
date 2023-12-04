@@ -30,14 +30,14 @@ func Register(engine *gin.Engine) {
 				controller := controllers.UserController{}
 				userGroup.DELETE("delete", controller.Delete) // 删除用户
 			}
-			// AI 模型关系映射
-			aiModelMapGroup := adminGroup.Group("aiModelMap")
+			// AI 模型管理
+			aiModelGroup := adminGroup.Group("aiModel")
 			{
-				controller := controllers.AiModelMapController{}
-				aiModelMapGroup.POST("create", controller.Create)   // 创建 AI 模型关系映射
-				aiModelMapGroup.PUT("update", controller.Update)    // 修改 AI 模型关系映射
-				aiModelMapGroup.GET("select", controller.Select)    // 查询 AI 模型关系映射列表
-				aiModelMapGroup.DELETE("delete", controller.Delete) // 删除 AI 模型关系映射
+				controller := controllers.AiModelController{}
+				aiModelGroup.POST("create", controller.Create)   // 创建 AI 模型
+				aiModelGroup.PUT("update", controller.Update)    // 修改 AI 模型
+				aiModelGroup.GET("select", controller.Select)    // 查询 AI 模型列表
+				aiModelGroup.DELETE("delete", controller.Delete) // 删除 AI 模型
 			}
 		}
 	}

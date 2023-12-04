@@ -1,20 +1,20 @@
-package ai_model_map
+package ai_model
 
 import (
 	"chatgpt_x/pkg/model"
 	paginator "github.com/yafeng-Soong/gorm-paginator"
 )
 
-// Create 创建 AI 模型关系映射。
-func (m *AiModelMap) Create() (err error) {
+// Create 创建 AI 模型。
+func (m *AiModel) Create() (err error) {
 	if err = model.DB.Create(&m).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-// Update 更新 AI 模型关系映射。
-func (m *AiModelMap) Update() (rowsAffected int64, err error) {
+// Update 更新 AI 模型。
+func (m *AiModel) Update() (rowsAffected int64, err error) {
 	result := model.DB.Select("*").Updates(&m)
 	if err = model.DB.Error; err != nil {
 		return 0, err
@@ -22,8 +22,8 @@ func (m *AiModelMap) Update() (rowsAffected int64, err error) {
 	return result.RowsAffected, nil
 }
 
-// Delete 删除 AI 模型关系映射。
-func (m *AiModelMap) Delete() (rowsAffected int64, err error) {
+// Delete 删除 AI 模型。
+func (m *AiModel) Delete() (rowsAffected int64, err error) {
 	result := model.DB.Delete(&m)
 	if err = result.Error; err != nil {
 		return 0, err
@@ -31,10 +31,10 @@ func (m *AiModelMap) Delete() (rowsAffected int64, err error) {
 	return result.RowsAffected, nil
 }
 
-// Select 查询 AI 模型关系映射。
-func (m *AiModelMap) Select(page, pageSize int64) (any, error) {
+// Select 查询 AI 模型。
+func (m *AiModel) Select(page, pageSize int64) (any, error) {
 	db := model.DB
-	p := paginator.Page[AiModelMap]{
+	p := paginator.Page[AiModel]{
 		CurrentPage: page,
 		PageSize:    pageSize,
 	}
@@ -45,11 +45,11 @@ func (m *AiModelMap) Select(page, pageSize int64) (any, error) {
 	return p, nil
 }
 
-// HasAiModelExist 通过 AiName 判断AI模型是否存在，存在返回 true，不存在返回 false。
+// HasAiModelExist 通过 AiName 判断 AI 模型是否存在，存在返回 true，不存在返回 false。
 func HasAiModelExist(aiName string, excludeID int) bool {
-	var aiModelMap AiModelMap
+	var aiModel AiModel
 	var count int64
-	db := model.DB.Model(aiModelMap).Where("ai_name = ?", aiName)
+	db := model.DB.Model(aiModel).Where("ai_name = ?", aiName)
 	if excludeID != 0 {
 		db = db.Where("id != ?", excludeID)
 	}
