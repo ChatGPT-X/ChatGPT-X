@@ -87,7 +87,7 @@ func (am *AiModelController) List(c *gin.Context) {
 	aiModel := ai_model.AiModel{}
 	pageData, err := aiModel.List(form.Page, form.PageSize)
 	if err != nil {
-		appG.Response(http.StatusOK, e.ErrorAiModelSelectFail, err, nil)
+		appG.Response(http.StatusOK, e.ErrorAiModelSelectListFail, err, nil)
 		return
 	}
 	data := pageData.(paginator.Page[ai_model.AiModel])

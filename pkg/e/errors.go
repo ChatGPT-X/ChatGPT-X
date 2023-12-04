@@ -18,7 +18,7 @@ var MsgFlags = map[int]string{
 	ErrorAiModelIsExist:              "AI模型已经存在",
 	ErrorAiModelCreateFail:           "AI模型创建失败",
 	ErrorAiModelUpdateFail:           "AI模型更新失败",
-	ErrorAiModelSelectFail:           "AI模型查询失败",
+	ErrorAiModelSelectListFail:       "AI模型列表查询失败",
 	ErrorAiModelDeleteFail:           "AI模型删除失败",
 }
 
