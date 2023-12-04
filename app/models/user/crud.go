@@ -31,11 +31,6 @@ func (m *Users) Delete() (rowsAffected int64, err error) {
 	return result.RowsAffected, nil
 }
 
-// IsDisable 判断用户是否被禁用，禁用返回 true，未禁用返回 false。
-func (m *Users) IsDisable() bool {
-	return m.IsDisabled == IsDisabled
-}
-
 // Get 根据 ID 获取用户信息。
 func Get(id int) (Users, error) {
 	var user Users

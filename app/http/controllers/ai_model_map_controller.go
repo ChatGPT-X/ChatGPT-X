@@ -33,7 +33,7 @@ func (am *AiModelMapController) Create(c *gin.Context) {
 	aiModelMap := ai_model_map.AiModelMap{
 		DisplayName: form.DisplayName,
 		AiName:      form.AiName,
-		IsDisabled:  form.IsDisabled,
+		Status:      form.Status,
 	}
 	if err := aiModelMap.Create(); err != nil {
 		appG.Response(http.StatusOK, e.ErrorAiModelMapCreateFail, err, nil)
@@ -61,7 +61,7 @@ func (am *AiModelMapController) Update(c *gin.Context) {
 		ID:          form.ID,
 		DisplayName: form.DisplayName,
 		AiName:      form.AiName,
-		IsDisabled:  form.IsDisabled,
+		Status:      form.Status,
 	}
 	rows, err := aiModelMap.Update()
 	if err != nil {
