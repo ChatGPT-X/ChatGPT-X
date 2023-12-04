@@ -75,7 +75,7 @@ func (am *AiModelController) Update(c *gin.Context) {
 func (am *AiModelController) List(c *gin.Context) {
 	appG := am.GetAppG(c)
 	// 表单验证
-	var form requests.ValidateAiModelSelect
+	var form requests.ValidateAiModelList
 	if err := c.ShouldBind(&form); err != nil {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return

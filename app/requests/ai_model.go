@@ -15,8 +15,8 @@ type ValidateAiModelUpdate struct {
 	Status      uint   `form:"status" binding:"oneof=0 1"`
 }
 
-// ValidateAiModelSelect AI 模型表查询验证。
-type ValidateAiModelSelect struct {
+// ValidateAiModelList AI 模型表查询验证。
+type ValidateAiModelList struct {
 	Page     int64 `form:"page" binding:"numeric"`
 	PageSize int64 `form:"page_size" binding:"numeric"`
 }
