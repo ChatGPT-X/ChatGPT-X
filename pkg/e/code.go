@@ -10,6 +10,7 @@ const (
 	ErrorUserIsExist                 = 10001 + iota // 用户已经存在
 	ErrorUserCreateFail                             // 用户创建失败
 	ErrorIncorrectUsernameOrPassword                // 用户名或密码错误
+	ErrorUserLoginFail                              // 用户登录失败
 	ErrorGenerateTokenFail                          // 生成token失败
 	ErrorUserIsDisabled                             // 用户已被封禁
 	ErrorUserDeleteFail                             // 用户删除失败

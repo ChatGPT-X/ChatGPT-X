@@ -63,6 +63,12 @@ func (u *UserController) DoLogin(c *gin.Context) {
 		appG.Response(http.StatusOK, e.ErrorUserIsDisabled, nil, nil)
 		return
 	}
+	// 更新用户登录时间
+	userModel.LastLoginTime = time.Now()
+	if _, err = userModel.Update(); err != nil {
+		appG.Response(http.StatusOK, e.ErrorUserLoginFail, err, nil)
+		return
+	}
 	// 生成 Token 授权
 	jwt, err := auth.GenerateToken(auth.CustomClaims{
 		UserID:   userModel.ID,
