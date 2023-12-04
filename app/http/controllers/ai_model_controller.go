@@ -83,9 +83,9 @@ func (am *AiModelController) List(c *gin.Context) {
 	// 设置默认值
 	SetDefaultValue(&form.Page, 1)
 	SetDefaultValue(&form.PageSize, 20)
-	// 查询 AI 模型
+	// 查询 AI 模型列表
 	aiModel := ai_model.AiModel{}
-	pageData, err := aiModel.Select(form.Page, form.PageSize)
+	pageData, err := aiModel.List(form.Page, form.PageSize)
 	if err != nil {
 		appG.Response(http.StatusOK, e.ErrorAiModelSelectFail, err, nil)
 		return

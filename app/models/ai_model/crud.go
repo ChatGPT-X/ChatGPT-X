@@ -31,8 +31,8 @@ func (m *AiModel) Delete() (rowsAffected int64, err error) {
 	return result.RowsAffected, nil
 }
 
-// Select 查询 AI 模型。
-func (m *AiModel) Select(page, pageSize int64) (any, error) {
+// List 查询 AI 模型列表。
+func (m *AiModel) List(page, pageSize int64) (any, error) {
 	db := model.DB
 	p := paginator.Page[AiModel]{
 		CurrentPage: page,
