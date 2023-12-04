@@ -36,7 +36,7 @@ func Register(engine *gin.Engine) {
 				controller := controllers.AiModelController{}
 				aiModelGroup.POST("create", controller.Create)   // 创建 AI 模型
 				aiModelGroup.PUT("update", controller.Update)    // 修改 AI 模型
-				aiModelGroup.GET("select", controller.Select)    // 查询 AI 模型列表
+				aiModelGroup.GET("list", controller.List)        // 查询 AI 模型列表
 				aiModelGroup.DELETE("delete", controller.Delete) // 删除 AI 模型
 			}
 		}

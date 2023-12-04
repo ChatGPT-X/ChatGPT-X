@@ -71,8 +71,8 @@ func (am *AiModelController) Update(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})
 }
 
-// Select 查询 AI 模型。
-func (am *AiModelController) Select(c *gin.Context) {
+// List 查询 AI 模型列表。
+func (am *AiModelController) List(c *gin.Context) {
 	appG := am.GetAppG(c)
 	// 表单验证
 	var form requests.ValidateAiModelSelect
