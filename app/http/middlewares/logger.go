@@ -29,10 +29,9 @@ func logFormatter(param gin.LogFormatterParams) string {
 		resetColor = param.ResetColor()
 	}
 
-	return fmt.Sprintf("[%s] %s | %v |%s %3d %s| %13v | %15s |%s %-7s %s %#v %s\n%s",
+	return fmt.Sprintf("[%s] %v |%s %3d %s| %13v | %15s |%s %-7s %s %#v %s\n%s",
 		appName,
-		param.Request.Proto,
-		param.TimeStamp.Format("2006/01/02 15:04:05"),
+		param.TimeStamp.Format("2006/01/02 - 15:04:05"),
 		statusColor, param.StatusCode, resetColor,
 		param.Latency,
 		param.ClientIP,
