@@ -28,6 +28,7 @@ func Register(engine *gin.Engine) {
 			userGroup := adminGroup.Group("user")
 			{
 				controller := controllers.UserController{}
+				userGroup.GET("list", controller.List)        // 查询用户列表
 				userGroup.DELETE("delete", controller.Delete) // 删除用户
 			}
 			// AI 模型管理

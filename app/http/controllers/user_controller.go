@@ -3,9 +3,11 @@ package controllers
 import (
 	"chatgpt_x/app/models/user"
 	"chatgpt_x/app/requests"
+	"chatgpt_x/pkg/app"
 	"chatgpt_x/pkg/auth"
 	"chatgpt_x/pkg/e"
 	"github.com/gin-gonic/gin"
+	paginator "github.com/yafeng-Soong/gorm-paginator"
 	"net/http"
 	"time"
 )
@@ -89,6 +91,35 @@ func (u *UserController) Logout(c *gin.Context) {
 	appG := u.GetAppG(c)
 	c.Header("Authorization", "")
 	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
+}
+
+// List 查询用户列表。
+func (u *UserController) List(c *gin.Context) {
+	appG := u.GetAppG(c)
+	// 表单验证
+	var form requests.ValidateUserList
+	if err := c.ShouldBind(&form); err != nil {
+		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
+		return
+	}
+	// 设置默认值
+	SetDefaultValue(&form.Page, 1)
+	SetDefaultValue(&form.PageSize, 20)
+	// 查询用户列表
+	userModel := user.Users{}
+	pageData, err := userModel.List(form.Page, form.PageSize)
+	if err != nil {
+		appG.Response(http.StatusOK, e.ErrorUserSelectListFail, err, nil)
+		return
+	}
+	data := pageData.(paginator.Page[user.Users])
+	appG.Response(http.StatusOK, e.SUCCESS, nil, app.ResponseDataList{
+		List:      data.Data,
+		Page:      data.CurrentPage,
+		PageSize:  data.PageSize,
+		PageCount: data.Pages,
+		Count:     data.Total,
+	})
 }
 
 // Delete 删除用户。

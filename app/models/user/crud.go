@@ -3,6 +3,7 @@ package user
 import (
 	"chatgpt_x/pkg/model"
 	"chatgpt_x/pkg/password"
+	paginator "github.com/yafeng-Soong/gorm-paginator"
 )
 
 // Create 创建用户，通过 User.ID 来判断是否创建成功。
@@ -29,6 +30,20 @@ func (m *Users) Delete() (rowsAffected int64, err error) {
 		return 0, err
 	}
 	return result.RowsAffected, nil
+}
+
+// List 查询用户列表。
+func (m *Users) List(page, pageSize int64) (any, error) {
+	db := model.DB.Omit("password")
+	p := paginator.Page[Users]{
+		CurrentPage: page,
+		PageSize:    pageSize,
+	}
+	err := p.SelectPages(db)
+	if err != nil {
+		return nil, err
+	}
+	return p, nil
 }
 
 // Get 根据 ID 获取用户信息。
