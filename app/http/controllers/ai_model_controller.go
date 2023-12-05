@@ -30,7 +30,7 @@ func (am *AiModelController) Create(c *gin.Context) {
 		return
 	}
 	// 创建 AI 模型
-	aiModel := ai_model.AiModel{
+	aiModel := ai_model.AiModels{
 		DisplayName: form.DisplayName,
 		AiName:      form.AiName,
 		Status:      form.Status,
@@ -57,7 +57,7 @@ func (am *AiModelController) Update(c *gin.Context) {
 		return
 	}
 	// 更新 AI 模型
-	aiModel := ai_model.AiModel{
+	aiModel := ai_model.AiModels{
 		ID:          form.ID,
 		DisplayName: form.DisplayName,
 		AiName:      form.AiName,
@@ -84,13 +84,13 @@ func (am *AiModelController) List(c *gin.Context) {
 	SetDefaultValue(&form.Page, 1)
 	SetDefaultValue(&form.PageSize, 20)
 	// 查询 AI 模型列表
-	aiModel := ai_model.AiModel{}
+	aiModel := ai_model.AiModels{}
 	pageData, err := aiModel.List(form.Page, form.PageSize)
 	if err != nil {
 		appG.Response(http.StatusOK, e.ErrorAiModelSelectListFail, err, nil)
 		return
 	}
-	data := pageData.(paginator.Page[ai_model.AiModel])
+	data := pageData.(paginator.Page[ai_model.AiModels])
 	appG.Response(http.StatusOK, e.SUCCESS, nil, app.ResponseDataList{
 		List:      data.Data,
 		Page:      data.CurrentPage,
@@ -110,7 +110,7 @@ func (am *AiModelController) Delete(c *gin.Context) {
 		return
 	}
 	// 删除 AI 模型
-	aiModel := ai_model.AiModel{
+	aiModel := ai_model.AiModels{
 		ID: form.ID,
 	}
 	rows, err := aiModel.Delete()

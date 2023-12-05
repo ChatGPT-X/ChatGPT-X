@@ -3,7 +3,7 @@ package ai_model
 import "time"
 
 // AI 模型表
-type AiModel struct {
+type AiModels struct {
 	ID          uint      `gorm:"column:id;type:int(11) unsigned;primary_key;AUTO_INCREMENT" json:"id"`
 	DisplayName string    `gorm:"column:display_name;type:varchar(100);NOT NULL" json:"display_name"`                      // 对外展示的模型名称
 	AiName      string    `gorm:"column:ai_name;type:varchar(100);NOT NULL" json:"ai_name"`                                // 要映射的模型名称
@@ -12,8 +12,8 @@ type AiModel struct {
 	CreateTime  time.Time `gorm:"column:create_time;type:timestamp;default:CURRENT_TIMESTAMP;NOT NULL" json:"create_time"` // 创建时间
 }
 
-func (m *AiModel) TableName() string {
-	return "t_ai_model"
+func (m *AiModels) TableName() string {
+	return "t_ai_models"
 }
 
 const (
