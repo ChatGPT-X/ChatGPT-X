@@ -7,7 +7,7 @@ import (
 )
 
 // Create 创建用户，通过 User.ID 来判断是否创建成功。
-func (m *Users) Create() (err error) {
+func (m *User) Create() (err error) {
 	if err = model.DB.Create(&m).Error; err != nil {
 		return err
 	}
@@ -15,7 +15,7 @@ func (m *Users) Create() (err error) {
 }
 
 // Update 更新用户资料。
-func (m *Users) Update() (rowsAffected int64, err error) {
+func (m *User) Update() (rowsAffected int64, err error) {
 	result := model.DB.Select("*").Updates(&m)
 	if err = model.DB.Error; err != nil {
 		return 0, err
@@ -24,7 +24,7 @@ func (m *Users) Update() (rowsAffected int64, err error) {
 }
 
 // Delete 删除用户。
-func (m *Users) Delete() (rowsAffected int64, err error) {
+func (m *User) Delete() (rowsAffected int64, err error) {
 	result := model.DB.Delete(&m)
 	if err = result.Error; err != nil {
 		return 0, err
@@ -33,9 +33,9 @@ func (m *Users) Delete() (rowsAffected int64, err error) {
 }
 
 // List 查询用户列表。
-func (m *Users) List(page, pageSize int64) (any, error) {
+func (m *User) List(page, pageSize int64) (any, error) {
 	db := model.DB.Omit("password")
-	p := paginator.Page[Users]{
+	p := paginator.Page[User]{
 		CurrentPage: page,
 		PageSize:    pageSize,
 	}
@@ -47,27 +47,27 @@ func (m *Users) List(page, pageSize int64) (any, error) {
 }
 
 // Get 根据 ID 获取用户信息。
-func Get(id int) (Users, error) {
-	var user Users
+func Get(id int) (User, error) {
+	var user User
 	if err := model.DB.First(&user, id).Error; err != nil {
-		return Users{}, err
+		return User{}, err
 	}
-	return Users{}, nil
+	return User{}, nil
 }
 
 // HasByUsernameExist 通过 Username 判断用户是否存在，存在返回 true，不存在返回 false。
 func HasByUsernameExist(username string) bool {
-	var user Users
+	var user User
 	var count int64
 	model.DB.Model(user).Where("username = ?", username).Count(&count)
 	return count != 0
 }
 
 // GetByUsername 通过 Username 获取用户信息。
-func GetByUsername(username string) (Users, error) {
-	var user Users
+func GetByUsername(username string) (User, error) {
+	var user User
 	if err := model.DB.Where("username = ?", username).First(&user).Error; err != nil {
-		return Users{}, err
+		return User{}, err
 	}
 	return user, nil
 }

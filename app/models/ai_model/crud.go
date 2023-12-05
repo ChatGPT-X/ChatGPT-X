@@ -6,7 +6,7 @@ import (
 )
 
 // Create 创建 AI 模型。
-func (m *AiModels) Create() (err error) {
+func (m *AiModel) Create() (err error) {
 	if err = model.DB.Create(&m).Error; err != nil {
 		return err
 	}
@@ -14,7 +14,7 @@ func (m *AiModels) Create() (err error) {
 }
 
 // Update 更新 AI 模型。
-func (m *AiModels) Update() (rowsAffected int64, err error) {
+func (m *AiModel) Update() (rowsAffected int64, err error) {
 	result := model.DB.Select("*").Updates(&m)
 	if err = model.DB.Error; err != nil {
 		return 0, err
@@ -23,7 +23,7 @@ func (m *AiModels) Update() (rowsAffected int64, err error) {
 }
 
 // Delete 删除 AI 模型。
-func (m *AiModels) Delete() (rowsAffected int64, err error) {
+func (m *AiModel) Delete() (rowsAffected int64, err error) {
 	result := model.DB.Delete(&m)
 	if err = result.Error; err != nil {
 		return 0, err
@@ -32,9 +32,9 @@ func (m *AiModels) Delete() (rowsAffected int64, err error) {
 }
 
 // List 查询 AI 模型列表。
-func (m *AiModels) List(page, pageSize int64) (any, error) {
+func (m *AiModel) List(page, pageSize int64) (any, error) {
 	db := model.DB
-	p := paginator.Page[AiModels]{
+	p := paginator.Page[AiModel]{
 		CurrentPage: page,
 		PageSize:    pageSize,
 	}
@@ -47,7 +47,7 @@ func (m *AiModels) List(page, pageSize int64) (any, error) {
 
 // HasAiModelExist 通过 AiName 判断 AI 模型是否存在，存在返回 true，不存在返回 false。
 func HasAiModelExist(aiName string, excludeID int) bool {
-	var aiModel AiModels
+	var aiModel AiModel
 	var count int64
 	db := model.DB.Model(aiModel).Where("ai_name = ?", aiName)
 	if excludeID != 0 {

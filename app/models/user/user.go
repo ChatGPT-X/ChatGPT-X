@@ -3,7 +3,7 @@ package user
 import "time"
 
 // 帐户表
-type Users struct {
+type User struct {
 	ID            uint      `gorm:"column:id;type:int(11) unsigned;primary_key;AUTO_INCREMENT" json:"id"`
 	Username      string    `gorm:"column:username;type:varchar(50);NOT NULL" json:"username"`                               // 账号
 	Password      string    `gorm:"column:password;type:varchar(255);NOT NULL" json:"password"`                              // 密码
@@ -15,7 +15,7 @@ type Users struct {
 	CreateTime    time.Time `gorm:"column:create_time;type:timestamp;default:CURRENT_TIMESTAMP;NOT NULL" json:"create_time"` // 创建时间
 }
 
-func (m *Users) TableName() string {
+func (m *User) TableName() string {
 	return "t_users"
 }
 

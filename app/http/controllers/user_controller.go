@@ -32,7 +32,7 @@ func (u *UserController) DoRegister(c *gin.Context) {
 		return
 	}
 	// 创建用户
-	userModel := user.Users{
+	userModel := user.User{
 		Username:      form.Username,
 		Email:         form.Email,
 		Password:      form.Password,
@@ -106,13 +106,13 @@ func (u *UserController) List(c *gin.Context) {
 	SetDefaultValue(&form.Page, 1)
 	SetDefaultValue(&form.PageSize, 20)
 	// 查询用户列表
-	userModel := user.Users{}
+	userModel := user.User{}
 	pageData, err := userModel.List(form.Page, form.PageSize)
 	if err != nil {
 		appG.Response(http.StatusOK, e.ErrorUserSelectListFail, err, nil)
 		return
 	}
-	data := pageData.(paginator.Page[user.Users])
+	data := pageData.(paginator.Page[user.User])
 	appG.Response(http.StatusOK, e.SUCCESS, nil, app.ResponseDataList{
 		List:      data.Data,
 		Page:      data.CurrentPage,
@@ -132,7 +132,7 @@ func (u *UserController) Delete(c *gin.Context) {
 		return
 	}
 	// 删除用户
-	userModel := user.Users{
+	userModel := user.User{
 		ID: form.ID,
 	}
 	rows, err := userModel.Delete()
