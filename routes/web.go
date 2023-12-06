@@ -40,6 +40,12 @@ func Register(engine *gin.Engine) {
 				aiModelGroup.GET("list", controller.List)        // 查询 AI 模型列表
 				aiModelGroup.DELETE("delete", controller.Delete) // 删除 AI 模型
 			}
+			// 密钥管理
+			tokenGroup := adminGroup.Group("token")
+			{
+				controller := controllers.TokenController{}
+				tokenGroup.POST("create", controller.Create) // 创建密钥
+			}
 		}
 	}
 }

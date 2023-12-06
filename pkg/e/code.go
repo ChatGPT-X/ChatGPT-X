@@ -20,4 +20,6 @@ const (
 	ErrorAiModelUpdateFail                          // AI模型更新失败
 	ErrorAiModelSelectListFail                      // AI模型列表查询失败
 	ErrorAiModelDeleteFail                          // AI模型删除失败
+	ErrorTokenIsExist                               // 密钥已经存在
+	ErrorTokenCreateFail                            // 密钥创建失败
 )
