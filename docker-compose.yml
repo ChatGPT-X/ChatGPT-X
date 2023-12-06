@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  ninja:
+    image: ghcr.io/gngpp/ninja:latest
+    container_name: ninja
+    restart: unless-stopped
+    command: run --disable-webui
+    ports:
+      - "7999:7999"
+    environment:
+      - TZ=Asia/Shanghai
+      - PROXIES=socks5://127.0.0.1:1080
+    volumes:
+      - "./har/gpt3:/root/.gpt3"
+      - "./har/gpt4:/root/.gpt4"
