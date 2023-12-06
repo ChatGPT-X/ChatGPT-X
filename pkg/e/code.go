@@ -22,4 +22,6 @@ const (
 	ErrorAiModelDeleteFail                          // AI模型删除失败
 	ErrorTokenIsExist                               // 密钥已经存在
 	ErrorTokenCreateFail                            // 密钥创建失败
+	ErrorTokenUpdateFail                            // 密钥更新失败
+	// 密钥更新失败
 )

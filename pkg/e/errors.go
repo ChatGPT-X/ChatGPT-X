@@ -23,6 +23,7 @@ var MsgFlags = map[int]string{
 	ErrorAiModelDeleteFail:           "AI模型删除失败",
 	ErrorTokenIsExist:                "密钥已经存在",
 	ErrorTokenCreateFail:             "密钥创建失败",
+	ErrorTokenUpdateFail:             "密钥更新失败",
 }
 
 // GetMsg get error information based on Code.
