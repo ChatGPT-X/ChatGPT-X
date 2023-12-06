@@ -20,6 +20,7 @@ func CheckAdmin() gin.HandlerFunc {
 				Msg:  e.GetMsg(e.ErrorAuthFail),
 				Data: nil,
 			})
+			return
 		}
 		// 从 jwt token 中获取用户权限
 		var claims *auth.Claims
@@ -30,6 +31,7 @@ func CheckAdmin() gin.HandlerFunc {
 				Msg:  e.GetMsg(e.ErrorAuthFail),
 				Data: nil,
 			})
+			return
 		}
 		c.Next()
 	}
@@ -46,6 +48,7 @@ func CheckLogin() gin.HandlerFunc {
 				Msg:  e.GetMsg(e.ErrorAuthFail),
 				Data: nil,
 			})
+			return
 		}
 		var claims *auth.Claims
 		claims, err = auth.ParseToken(jwt)
@@ -55,6 +58,7 @@ func CheckLogin() gin.HandlerFunc {
 				Msg:  e.GetMsg(e.ErrorAuthFail),
 				Data: nil,
 			})
+			return
 		}
 		c.Next()
 	}
