@@ -19,21 +19,21 @@ type AiModelController struct {
 func (am *AiModelController) Create(c *gin.Context) {
 	appG := am.GetAppG(c)
 	// 表单验证
-	var form requests.ValidateAiModelCreate
-	if err := c.ShouldBind(&form); err != nil {
+	var params requests.ValidateAiModelCreate
+	if err := c.ShouldBind(&params); err != nil {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
 	// 检查 AI 模型是否存在
-	if ai_model.HasAiModelExist(form.Name, 0) {
+	if ai_model.HasAiModelExist(params.Name, 0) {
 		appG.Response(http.StatusOK, e.ErrorAiModelIsExist, nil, nil)
 		return
 	}
 	// 创建 AI 模型
 	aiModel := ai_model.AiModel{
-		AliasName: form.AliasName,
-		Name:      form.Name,
-		Status:    form.Status,
+		AliasName: params.AliasName,
+		Name:      params.Name,
+		Status:    params.Status,
 	}
 	if err := aiModel.Create(); err != nil {
 		appG.Response(http.StatusOK, e.ErrorAiModelCreateFail, err, nil)
@@ -46,22 +46,22 @@ func (am *AiModelController) Create(c *gin.Context) {
 func (am *AiModelController) Update(c *gin.Context) {
 	appG := am.GetAppG(c)
 	// 表单验证
-	var form requests.ValidateAiModelUpdate
-	if err := c.ShouldBind(&form); err != nil {
+	var params requests.ValidateAiModelUpdate
+	if err := c.ShouldBind(&params); err != nil {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
 	// 检查 AI 模型是否存在
-	if ai_model.HasAiModelExist(form.Name, int(form.ID)) {
+	if ai_model.HasAiModelExist(params.Name, int(params.ID)) {
 		appG.Response(http.StatusOK, e.ErrorAiModelIsExist, nil, nil)
 		return
 	}
 	// 更新 AI 模型
 	aiModel := ai_model.AiModel{
-		ID:        form.ID,
-		AliasName: form.AliasName,
-		Name:      form.Name,
-		Status:    form.Status,
+		ID:        params.ID,
+		AliasName: params.AliasName,
+		Name:      params.Name,
+		Status:    params.Status,
 	}
 	rows, err := aiModel.Update()
 	if err != nil {
@@ -75,17 +75,17 @@ func (am *AiModelController) Update(c *gin.Context) {
 func (am *AiModelController) List(c *gin.Context) {
 	appG := am.GetAppG(c)
 	// 表单验证
-	var form requests.ValidateAiModelList
-	if err := c.ShouldBind(&form); err != nil {
+	var params requests.ValidateAiModelList
+	if err := c.ShouldBind(&params); err != nil {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
 	// 设置默认值
-	SetDefaultValue(&form.Page, 1)
-	SetDefaultValue(&form.PageSize, 20)
+	SetDefaultValue(&params.Page, 1)
+	SetDefaultValue(&params.PageSize, 20)
 	// 查询 AI 模型列表
 	aiModel := ai_model.AiModel{}
-	pageData, err := aiModel.List(form.Page, form.PageSize)
+	pageData, err := aiModel.List(params.Page, params.PageSize)
 	if err != nil {
 		appG.Response(http.StatusOK, e.ErrorAiModelSelectListFail, err, nil)
 		return
@@ -104,14 +104,14 @@ func (am *AiModelController) List(c *gin.Context) {
 func (am *AiModelController) Delete(c *gin.Context) {
 	appG := am.GetAppG(c)
 	// 表单验证
-	var form requests.ValidateAiModelDelete
-	if err := c.ShouldBind(&form); err != nil {
+	var params requests.ValidateAiModelDelete
+	if err := c.ShouldBind(&params); err != nil {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
 	// 删除 AI 模型
 	aiModel := ai_model.AiModel{
-		ID: form.ID,
+		ID: params.ID,
 	}
 	rows, err := aiModel.Delete()
 	if err != nil {

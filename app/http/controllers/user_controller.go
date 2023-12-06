@@ -21,21 +21,21 @@ type UserController struct {
 func (u *UserController) DoRegister(c *gin.Context) {
 	appG := u.GetAppG(c)
 	// 表单验证
-	var form requests.ValidateDoRegister
-	if err := c.ShouldBind(&form); err != nil {
+	var params requests.ValidateDoRegister
+	if err := c.ShouldBind(&params); err != nil {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
 	// 检查用户名是否重复
-	if user.HasByUsernameExist(form.Username) {
+	if user.HasByUsernameExist(params.Username) {
 		appG.Response(http.StatusOK, e.ErrorUserIsExist, nil, nil)
 		return
 	}
 	// 创建用户
 	userModel := user.User{
-		Username:      form.Username,
-		Email:         form.Email,
-		Password:      form.Password,
+		Username:      params.Username,
+		Email:         params.Email,
+		Password:      params.Password,
 		LastLoginTime: time.Now(),
 	}
 	if err := userModel.Create(); err != nil {
@@ -49,14 +49,14 @@ func (u *UserController) DoRegister(c *gin.Context) {
 func (u *UserController) DoLogin(c *gin.Context) {
 	appG := u.GetAppG(c)
 	// 表单验证
-	var form requests.ValidateDoLogin
-	if err := c.ShouldBind(&form); err != nil {
+	var params requests.ValidateDoLogin
+	if err := c.ShouldBind(&params); err != nil {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
 	// 检查用户名和密码是否正确
-	userModel, err := user.GetByUsername(form.Username)
-	if err != nil || !user.CheckPassword(form.Password, userModel.Password) {
+	userModel, err := user.GetByUsername(params.Username)
+	if err != nil || !user.CheckPassword(params.Password, userModel.Password) {
 		appG.Response(http.StatusOK, e.ErrorIncorrectUsernameOrPassword, err, nil)
 		return
 	}
@@ -97,17 +97,17 @@ func (u *UserController) Logout(c *gin.Context) {
 func (u *UserController) List(c *gin.Context) {
 	appG := u.GetAppG(c)
 	// 表单验证
-	var form requests.ValidateUserList
-	if err := c.ShouldBind(&form); err != nil {
+	var params requests.ValidateUserList
+	if err := c.ShouldBind(&params); err != nil {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
 	// 设置默认值
-	SetDefaultValue(&form.Page, 1)
-	SetDefaultValue(&form.PageSize, 20)
+	SetDefaultValue(&params.Page, 1)
+	SetDefaultValue(&params.PageSize, 20)
 	// 查询用户列表
 	userModel := user.User{}
-	pageData, err := userModel.List(form.Page, form.PageSize)
+	pageData, err := userModel.List(params.Page, params.PageSize)
 	if err != nil {
 		appG.Response(http.StatusOK, e.ErrorUserSelectListFail, err, nil)
 		return
@@ -126,14 +126,14 @@ func (u *UserController) List(c *gin.Context) {
 func (u *UserController) Delete(c *gin.Context) {
 	appG := u.GetAppG(c)
 	// 表单验证
-	var form requests.ValidateUserDelete
-	if err := c.ShouldBind(&form); err != nil {
+	var params requests.ValidateUserDelete
+	if err := c.ShouldBind(&params); err != nil {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
 	// 删除用户
 	userModel := user.User{
-		ID: form.ID,
+		ID: params.ID,
 	}
 	rows, err := userModel.Delete()
 	if err != nil {
