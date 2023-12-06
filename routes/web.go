@@ -46,6 +46,7 @@ func Register(engine *gin.Engine) {
 				controller := controllers.TokenController{}
 				tokenGroup.POST("create", controller.Create) // 创建密钥
 				tokenGroup.PUT("update", controller.Update)  // 修改密钥
+				tokenGroup.GET("list", controller.List)      // 查询密钥列表
 			}
 		}
 	}
