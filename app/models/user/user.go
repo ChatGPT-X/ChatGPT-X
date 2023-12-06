@@ -20,8 +20,8 @@ func (m *User) TableName() string {
 }
 
 const (
-	IsAdmin       = 1 // 管理员
 	IsNotAdmin    = 0 // 普通用户
-	StatusEnable  = 1 // 启用
+	IsAdmin       = 1 // 管理员
 	StatusDisable = 0 // 禁用
+	StatusEnable  = 1 // 启用
 )

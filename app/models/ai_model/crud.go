@@ -46,10 +46,10 @@ func (m *AiModel) List(page, pageSize int64) (any, error) {
 }
 
 // HasAiModelExist 通过 AiName 判断 AI 模型是否存在，存在返回 true，不存在返回 false。
-func HasAiModelExist(aiName string, excludeID int) bool {
+func HasAiModelExist(name string, excludeID int) bool {
 	var aiModel AiModel
 	var count int64
-	db := model.DB.Model(aiModel).Where("ai_name = ?", aiName)
+	db := model.DB.Model(aiModel).Where("name = ?", name)
 	if excludeID != 0 {
 		db = db.Where("id != ?", excludeID)
 	}

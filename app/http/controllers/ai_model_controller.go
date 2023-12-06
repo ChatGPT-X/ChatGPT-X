@@ -25,15 +25,15 @@ func (am *AiModelController) Create(c *gin.Context) {
 		return
 	}
 	// 检查 AI 模型是否存在
-	if ai_model.HasAiModelExist(form.AiName, 0) {
+	if ai_model.HasAiModelExist(form.Name, 0) {
 		appG.Response(http.StatusOK, e.ErrorAiModelIsExist, nil, nil)
 		return
 	}
 	// 创建 AI 模型
 	aiModel := ai_model.AiModel{
-		DisplayName: form.DisplayName,
-		AiName:      form.AiName,
-		Status:      form.Status,
+		AliasName: form.AliasName,
+		Name:      form.Name,
+		Status:    form.Status,
 	}
 	if err := aiModel.Create(); err != nil {
 		appG.Response(http.StatusOK, e.ErrorAiModelCreateFail, err, nil)
@@ -52,16 +52,16 @@ func (am *AiModelController) Update(c *gin.Context) {
 		return
 	}
 	// 检查 AI 模型是否存在
-	if ai_model.HasAiModelExist(form.AiName, int(form.ID)) {
+	if ai_model.HasAiModelExist(form.Name, int(form.ID)) {
 		appG.Response(http.StatusOK, e.ErrorAiModelIsExist, nil, nil)
 		return
 	}
 	// 更新 AI 模型
 	aiModel := ai_model.AiModel{
-		ID:          form.ID,
-		DisplayName: form.DisplayName,
-		AiName:      form.AiName,
-		Status:      form.Status,
+		ID:        form.ID,
+		AliasName: form.AliasName,
+		Name:      form.Name,
+		Status:    form.Status,
 	}
 	rows, err := aiModel.Update()
 	if err != nil {
