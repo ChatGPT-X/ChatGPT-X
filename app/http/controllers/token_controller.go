@@ -85,7 +85,7 @@ func (t *TokenController) List(c *gin.Context) {
 	// 设置默认值
 	SetDefaultValue(&params.Page, 1)
 	SetDefaultValue(&params.PageSize, 20)
-	// 查询 AI 模型列表
+	// 查询密钥列表
 	tokenModel := token.Token{}
 	pageData, err := tokenModel.List(params.Page, params.PageSize)
 	if err != nil {
@@ -111,7 +111,7 @@ func (t *TokenController) Delete(c *gin.Context) {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
-	// 删除 AI 模型
+	// 删除密钥
 	tokenModel := token.Token{
 		ID: params.ID,
 	}
