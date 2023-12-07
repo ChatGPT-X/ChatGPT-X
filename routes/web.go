@@ -44,9 +44,10 @@ func Register(engine *gin.Engine) {
 			tokenGroup := adminGroup.Group("token")
 			{
 				controller := controllers.TokenController{}
-				tokenGroup.POST("create", controller.Create) // 创建密钥
-				tokenGroup.PUT("update", controller.Update)  // 修改密钥
-				tokenGroup.GET("list", controller.List)      // 查询密钥列表
+				tokenGroup.POST("create", controller.Create)   // 创建密钥
+				tokenGroup.PUT("update", controller.Update)    // 修改密钥
+				tokenGroup.GET("list", controller.List)        // 查询密钥列表
+				tokenGroup.DELETE("delete", controller.Delete) // 删除密钥
 			}
 		}
 	}

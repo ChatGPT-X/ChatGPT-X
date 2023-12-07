@@ -25,6 +25,7 @@ var MsgFlags = map[int]string{
 	ErrorTokenCreateFail:             "密钥创建失败",
 	ErrorTokenUpdateFail:             "密钥更新失败",
 	ErrorTokenSelectListFail:         "密钥列表查询失败",
+	ErrorTokenDeleteFail:             "密钥删除失败",
 }
 
 // GetMsg get error information based on Code.

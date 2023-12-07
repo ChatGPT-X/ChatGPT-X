@@ -101,3 +101,24 @@ func (t *TokenController) List(c *gin.Context) {
 		Count:     data.Total,
 	})
 }
+
+// Delete 删除密钥。
+func (t *TokenController) Delete(c *gin.Context) {
+	appG := t.GetAppG(c)
+	// 表单验证
+	var params requests.ValidateTokenDelete
+	if err := c.ShouldBind(&params); err != nil {
+		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
+		return
+	}
+	// 删除 AI 模型
+	tokenModel := token.Token{
+		ID: params.ID,
+	}
+	rows, err := tokenModel.Delete()
+	if err != nil {
+		appG.Response(http.StatusOK, e.ErrorTokenDeleteFail, err, nil)
+		return
+	}
+	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})
+}
