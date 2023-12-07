@@ -1,3 +1,3 @@
 package models
 
-type CustomModel map[string]interface{}
+var SqlNullUint *uint

@@ -5,6 +5,7 @@ import "time"
 // 帐户表
 type User struct {
 	ID            uint      `gorm:"column:id;type:int(11) unsigned;primary_key;AUTO_INCREMENT" json:"id"`
+	TokenID       *uint     `gorm:"column:token_id;type:int(11) unsigned" json:"token_id"`                                   // 使用的密钥 id
 	Username      string    `gorm:"column:username;type:varchar(50);NOT NULL" json:"username"`                               // 账号
 	Password      string    `gorm:"column:password;type:varchar(255);NOT NULL" json:"password"`                              // 密码
 	Email         string    `gorm:"column:email;type:varchar(100);NOT NULL" json:"email"`                                    // 邮箱

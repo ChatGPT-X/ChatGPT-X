@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"chatgpt_x/app/models"
 	"chatgpt_x/app/models/user"
 	"chatgpt_x/app/requests"
 	"chatgpt_x/pkg/app"
@@ -33,10 +34,10 @@ func (u *UserController) DoRegister(c *gin.Context) {
 	}
 	// 创建用户
 	userModel := user.User{
-		Username:      params.Username,
-		Email:         params.Email,
-		Password:      params.Password,
-		LastLoginTime: time.Now(),
+		TokenID:  models.SqlNullUint,
+		Username: params.Username,
+		Email:    params.Email,
+		Password: params.Password,
 	}
 	if err := userModel.Create(); err != nil {
 		appG.Response(http.StatusOK, e.ErrorUserCreateFail, err, nil)
