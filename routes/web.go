@@ -40,14 +40,14 @@ func Register(engine *gin.Engine) {
 				aiModelGroup.GET("list", controller.List)        // 查询 AI 模型列表
 				aiModelGroup.DELETE("delete", controller.Delete) // 删除 AI 模型
 			}
-			// 密钥管理
-			tokenGroup := adminGroup.Group("token")
+			// AI 密钥管理
+			aiTokenGroup := adminGroup.Group("aiToken")
 			{
-				controller := controllers.TokenController{}
-				tokenGroup.POST("create", controller.Create)   // 创建密钥
-				tokenGroup.PUT("update", controller.Update)    // 修改密钥
-				tokenGroup.GET("list", controller.List)        // 查询密钥列表
-				tokenGroup.DELETE("delete", controller.Delete) // 删除密钥
+				controller := controllers.AiTokenController{}
+				aiTokenGroup.POST("create", controller.Create)   // 创建 AI 密钥
+				aiTokenGroup.PUT("update", controller.Update)    // 修改 AI 密钥
+				aiTokenGroup.GET("list", controller.List)        // 查询 AI 密钥列表
+				aiTokenGroup.DELETE("delete", controller.Delete) // 删除 AI 密钥
 			}
 		}
 	}

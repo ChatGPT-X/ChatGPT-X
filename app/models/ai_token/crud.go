@@ -1,4 +1,4 @@
-package token
+package ai_token
 
 import (
 	"chatgpt_x/pkg/model"
@@ -6,7 +6,7 @@ import (
 )
 
 // Create 创建密钥。
-func (m *Token) Create() (err error) {
+func (m *AiToken) Create() (err error) {
 	if err = model.DB.Create(&m).Error; err != nil {
 		return err
 	}
@@ -14,7 +14,7 @@ func (m *Token) Create() (err error) {
 }
 
 // Update 更新密钥。
-func (m *Token) Update() (rowsAffected int64, err error) {
+func (m *AiToken) Update() (rowsAffected int64, err error) {
 	result := model.DB.Select("*").Updates(&m)
 	if err = model.DB.Error; err != nil {
 		return 0, err
@@ -23,7 +23,7 @@ func (m *Token) Update() (rowsAffected int64, err error) {
 }
 
 // Delete 删除密钥。
-func (m *Token) Delete() (rowsAffected int64, err error) {
+func (m *AiToken) Delete() (rowsAffected int64, err error) {
 	result := model.DB.Delete(&m)
 	if err = result.Error; err != nil {
 		return 0, err
@@ -32,9 +32,9 @@ func (m *Token) Delete() (rowsAffected int64, err error) {
 }
 
 // List 查询密钥列表。
-func (m *Token) List(page, pageSize int64) (any, error) {
+func (m *AiToken) List(page, pageSize int64) (any, error) {
 	db := model.DB
-	p := paginator.Page[Token]{
+	p := paginator.Page[AiToken]{
 		CurrentPage: page,
 		PageSize:    pageSize,
 	}
@@ -46,10 +46,10 @@ func (m *Token) List(page, pageSize int64) (any, error) {
 }
 
 // HasTokenExist 判断密钥是否存在，存在返回 true，不存在返回 false。
-func HasTokenExist(tokenValue string, excludeID int) bool {
-	var token Token
+func HasTokenExist(token string, excludeID int) bool {
+	var aiTokenModel AiToken
 	var count int64
-	db := model.DB.Model(token).Where("token = ?", tokenValue)
+	db := model.DB.Model(aiTokenModel).Where("token = ?", token)
 	if excludeID != 0 {
 		db = db.Where("id != ?", excludeID)
 	}
