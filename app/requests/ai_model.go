@@ -12,7 +12,7 @@ type ValidateAiModelUpdate struct {
 	ID        uint   `form:"id" binding:"required,numeric"`
 	AliasName string `form:"alias_name" binding:"required,min=1,max=30"`
 	Name      string `form:"name" binding:"required,min=1,max=30"`
-	Status    uint   `form:"status" binding:"required,oneof=0 1"`
+	Status    uint   `form:"status" binding:"oneof=0 1"`
 }
 
 // ValidateAiModelList AI 模型查询列表验证。
