@@ -123,6 +123,28 @@ func (u *UserController) List(c *gin.Context) {
 	})
 }
 
+// Update 更新用户。
+func (u *UserController) Update(c *gin.Context) {
+	appG := u.GetAppG(c)
+	// 表单验证
+	var params requests.ValidateUserUpdate
+	if err := c.ShouldBind(&params); err != nil {
+		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
+		return
+	}
+	// 更新用户，因为有一些字段不能修改 这里要先查一下
+	userModel, err := user.Get(params.ID)
+	userModel.TokenID = params.TokenID
+	userModel.Password = params.Password
+	userModel.Status = params.Status
+	rows, err := userModel.Update()
+	if err != nil {
+		appG.Response(http.StatusOK, e.ErrorUserUpdateFail, err, nil)
+		return
+	}
+	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})
+}
+
 // Delete 删除用户。
 func (u *UserController) Delete(c *gin.Context) {
 	appG := u.GetAppG(c)

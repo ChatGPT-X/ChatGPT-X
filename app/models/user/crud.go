@@ -47,12 +47,12 @@ func (m *User) List(page, pageSize int64) (any, error) {
 }
 
 // Get 根据 ID 获取用户信息。
-func Get(id int) (User, error) {
+func Get(id uint) (User, error) {
 	var user User
 	if err := model.DB.First(&user, id).Error; err != nil {
 		return User{}, err
 	}
-	return User{}, nil
+	return user, nil
 }
 
 // HasByUsernameExist 通过 Username 判断用户是否存在，存在返回 true，不存在返回 false。

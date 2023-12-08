@@ -15,6 +15,7 @@ var MsgFlags = map[int]string{
 	ErrorUserLoginFail:                 "用户登录失败",
 	ErrorUserIsDisabled:                "用户已被封禁",
 	ErrorUserSelectListFail:            "用户列表查询失败",
+	ErrorUserUpdateFail:                "用户更新失败",
 	ErrorUserDeleteFail:                "用户删除失败",
 	ErrorAiModelIsExist:                "AI模型已经存在",
 	ErrorAiModelCreateFail:             "AI模型创建失败",

@@ -19,6 +19,14 @@ type ValidateUserList struct {
 	PageSize int64 `form:"page_size" binding:"numeric"`
 }
 
+// ValidateUserUpdate 用户更新验证。
+type ValidateUserUpdate struct {
+	ID       uint   `form:"id" binding:"required,numeric"`
+	TokenID  *uint  `form:"token_id" binding:"omitnil,numeric"`
+	Password string `form:"password" binding:"min=6,max=30"`
+	Status   uint   `form:"status" binding:"numeric"`
+}
+
 // ValidateUserDelete 用户删除验证。
 type ValidateUserDelete struct {
 	ID uint `form:"id" binding:"required,numeric"`
