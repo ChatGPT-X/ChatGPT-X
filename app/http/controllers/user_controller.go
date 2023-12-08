@@ -34,10 +34,10 @@ func (u *UserController) DoRegister(c *gin.Context) {
 	}
 	// 创建用户
 	userModel := user.User{
-		TokenID:  models.SqlNullUint,
-		Username: params.Username,
-		Email:    params.Email,
-		Password: params.Password,
+		AiTokenID: models.SqlNullUint,
+		Username:  params.Username,
+		Email:     params.Email,
+		Password:  params.Password,
 	}
 	if err := userModel.Create(); err != nil {
 		appG.Response(http.StatusOK, e.ErrorUserCreateFail, err, nil)
@@ -132,11 +132,14 @@ func (u *UserController) Update(c *gin.Context) {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
-	// 更新用户，因为有一些字段不能修改 这里要先查一下
-	userModel, err := user.Get(params.ID)
-	userModel.TokenID = params.TokenID
-	userModel.Password = params.Password
-	userModel.Status = params.Status
+	// 更新用户
+	// todo:// 这里还有问题，等待处理一下
+	userModel := user.User{
+		ID:        params.ID,
+		AiTokenID: params.AiTokenID,
+		Password:  params.Password,
+		Status:    params.Status,
+	}
 	rows, err := userModel.Update()
 	if err != nil {
 		appG.Response(http.StatusOK, e.ErrorUserUpdateFail, err, nil)
