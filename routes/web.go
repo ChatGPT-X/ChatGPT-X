@@ -49,6 +49,13 @@ func Register(engine *gin.Engine) {
 				aiTokenGroup.GET("list", controller.List)        // 查询 AI 密钥列表
 				aiTokenGroup.DELETE("delete", controller.Delete) // 删除 AI 密钥
 			}
+			// 系统设置管理
+			systemSettingGroup := adminGroup.Group("systemSetting")
+			{
+				controller := controllers.SystemSettingController{}
+				systemSettingGroup.GET("detail", controller.Detail) // 查询系统设置详情
+				systemSettingGroup.PUT("update", controller.Update) // 更新系统设置
+			}
 		}
 	}
 }
