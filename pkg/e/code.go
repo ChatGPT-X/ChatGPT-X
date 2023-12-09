@@ -13,6 +13,7 @@ const (
 	ErrorIncorrectUsernameOrPassword                  // 用户名或密码错误
 	ErrorUserLoginFail                                // 用户登录失败
 	ErrorUserIsDisabled                               // 用户已被封禁
+	ErrorUserSelectDetailFail                         // 用户详情查询失败
 	ErrorUserSelectListFail                           // 用户列表查询失败
 	ErrorUserUpdateFail                               // 用户更新失败
 	ErrorUserDeleteFail                               // 用户删除失败

@@ -133,13 +133,14 @@ func (u *UserController) Update(c *gin.Context) {
 		return
 	}
 	// 更新用户
-	// todo:// 这里还有问题，等待处理一下
-	userModel := user.User{
-		ID:        params.ID,
-		AiTokenID: params.AiTokenID,
-		Password:  params.Password,
-		Status:    params.Status,
+	userModel, err := user.Get(params.ID)
+	if err != nil {
+		appG.Response(http.StatusOK, e.ErrorUserSelectDetailFail, err, nil)
+		return
 	}
+	userModel.AiTokenID = params.AiTokenID
+	userModel.Password = params.Password
+	userModel.Status = params.Status
 	rows, err := userModel.Update()
 	if err != nil {
 		appG.Response(http.StatusOK, e.ErrorUserUpdateFail, err, nil)
