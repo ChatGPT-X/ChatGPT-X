@@ -24,7 +24,7 @@ type ValidateUserUpdate struct {
 	ID        uint   `form:"id" binding:"required,numeric"`
 	AiTokenID *uint  `form:"ai_token_id" binding:"omitnil,numeric"`
 	Password  string `form:"password" binding:"omitempty,min=6,max=30"`
-	Status    uint   `form:"status" binding:"oneof=0 1"`
+	Status    string `form:"status" binding:"required,oneof=y n"`
 }
 
 // ValidateUserDelete 用户删除验证。

@@ -8,7 +8,7 @@ type AiToken struct {
 	Type       uint      `gorm:"column:type;type:tinyint(4) unsigned;default:1;NOT NULL" json:"type"`                     // 类型：1-apiKey 2-accessToken
 	Token      string    `gorm:"column:token;type:text;NOT NULL" json:"token"`                                            // 密钥内容
 	Remark     string    `gorm:"column:remark;type:varchar(255);NOT NULL" json:"remark"`                                  // 备注
-	Status     uint      `gorm:"column:status;type:tinyint(4) unsigned;default:1;NOT NULL" json:"status"`                 // 状态：0-禁用 1-启用
+	Status     string    `gorm:"column:status;type:enum('y','n');default:y;NOT NULL" json:"status"`                       // 状态：y-启用 n-禁用
 	UpdateTime time.Time `gorm:"column:update_time;type:timestamp;default:CURRENT_TIMESTAMP;NOT NULL" json:"update_time"` // 修改时间
 	CreateTime time.Time `gorm:"column:create_time;type:timestamp;default:CURRENT_TIMESTAMP;NOT NULL" json:"create_time"` // 创建时间
 }
@@ -18,8 +18,8 @@ func (m *AiToken) TableName() string {
 }
 
 const (
-	TypeApiKey      = 1 // apiKey
-	TypeAccessToken = 2 // accessToken
-	StatusDisable   = 0 // 禁用
-	StatusEnable    = 1 // 启用
+	TypeApiKey      = 1   // apiKey
+	TypeAccessToken = 2   // accessToken
+	StatusEnable    = "y" // 启用
+	StatusDisable   = "n" // 禁用
 )

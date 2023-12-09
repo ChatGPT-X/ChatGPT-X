@@ -5,7 +5,7 @@ type ValidateAiTokenCreate struct {
 	Type   uint   `form:"type" binding:"required,oneof=1 2"`
 	Token  string `form:"token" binding:"required,min=1,max=2000"`
 	Remark string `form:"remark" binding:"min=1,max=255"`
-	Status uint   `form:"status" binding:"oneof=0 1"`
+	Status string `form:"status" binding:"required,oneof=y n"`
 }
 
 // ValidateAiTokenUpdate AI 密钥更新验证。
@@ -14,7 +14,7 @@ type ValidateAiTokenUpdate struct {
 	Type   uint   `form:"type" binding:"required,oneof=1 2"`
 	Token  string `form:"token" binding:"required,min=1,max=2000"`
 	Remark string `form:"remark" binding:"min=1,max=255"`
-	Status uint   `form:"status" binding:"oneof=0 1"`
+	Status string `form:"status" binding:"required,oneof=y n"`
 }
 
 // ValidateAiTokenList AI 密钥查询列表验证。

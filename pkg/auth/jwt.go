@@ -27,7 +27,7 @@ func InitConfig(secret, issuer string, activeTime int) {
 // CustomClaims 自定义声明。
 type CustomClaims struct {
 	UserID   uint   `json:"user_id"`
-	IsAdmin  uint   `json:"is_admin"`
+	IsAdmin  string `json:"is_admin"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 }
