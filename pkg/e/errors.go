@@ -32,6 +32,12 @@ var MsgFlags = map[int]string{
 	ErrorSystemSettingSelectDetailFail: "系统设置详情查询失败",
 }
 
+// ErrInfo 错误信息结构。
+type ErrInfo struct {
+	Code int
+	Msg  error
+}
+
 // GetMsg get error information based on Code.
 func GetMsg(code int) string {
 	msg, ok := MsgFlags[code]

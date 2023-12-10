@@ -38,3 +38,8 @@ func (g *Gin) Response(httpCode, errCode int, err error, data interface{}) {
 		Data: data,
 	})
 }
+
+// SetAuthorization 设置 JWT Authorization.
+func (g *Gin) SetAuthorization(token string) {
+	g.C.Header("Authorization", "Bearer "+token)
+}

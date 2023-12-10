@@ -3,10 +3,10 @@ package controllers
 import (
 	"chatgpt_x/app/models/ai_model"
 	"chatgpt_x/app/requests"
+	"chatgpt_x/app/service/ai_model_service"
 	"chatgpt_x/pkg/app"
 	"chatgpt_x/pkg/e"
 	"github.com/gin-gonic/gin"
-	paginator "github.com/yafeng-Soong/gorm-paginator"
 	"net/http"
 )
 
@@ -24,19 +24,15 @@ func (am *AiModelController) Create(c *gin.Context) {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
-	// 检查 AI 模型是否存在
-	if ai_model.HasAiModelExist(params.Name, 0) {
-		appG.Response(http.StatusOK, e.ErrorAiModelIsExist, nil, nil)
-		return
-	}
 	// 创建 AI 模型
-	aiModel := ai_model.AiModel{
+	aiModelService := ai_model_service.AiModelService{}
+	errInfo := aiModelService.Create(ai_model.AiModel{
 		AliasName: params.AliasName,
 		Name:      params.Name,
 		Status:    params.Status,
-	}
-	if err := aiModel.Create(); err != nil {
-		appG.Response(http.StatusOK, e.ErrorAiModelCreateFail, err, nil)
+	})
+	if errInfo.Code != e.SUCCESS {
+		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
 		return
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
@@ -51,21 +47,16 @@ func (am *AiModelController) Update(c *gin.Context) {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
-	// 检查 AI 模型是否存在
-	if ai_model.HasAiModelExist(params.Name, int(params.ID)) {
-		appG.Response(http.StatusOK, e.ErrorAiModelIsExist, nil, nil)
-		return
-	}
 	// 更新 AI 模型
-	aiModel := ai_model.AiModel{
+	aiModelService := ai_model_service.AiModelService{}
+	rows, errInfo := aiModelService.Update(ai_model.AiModel{
 		ID:        params.ID,
 		AliasName: params.AliasName,
 		Name:      params.Name,
 		Status:    params.Status,
-	}
-	rows, err := aiModel.Update()
-	if err != nil {
-		appG.Response(http.StatusOK, e.ErrorAiModelUpdateFail, err, nil)
+	})
+	if errInfo.Code != e.SUCCESS {
+		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
 		return
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})
@@ -84,13 +75,12 @@ func (am *AiModelController) List(c *gin.Context) {
 	SetDefaultValue(&params.Page, 1)
 	SetDefaultValue(&params.PageSize, 20)
 	// 查询 AI 模型列表
-	aiModel := ai_model.AiModel{}
-	pageData, err := aiModel.List(params.Page, params.PageSize)
-	if err != nil {
-		appG.Response(http.StatusOK, e.ErrorAiModelSelectListFail, err, nil)
+	aiModelService := ai_model_service.AiModelService{}
+	data, errInfo := aiModelService.List(params.Page, params.PageSize)
+	if errInfo.Code != e.SUCCESS {
+		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
 		return
 	}
-	data := pageData.(paginator.Page[ai_model.AiModel])
 	appG.Response(http.StatusOK, e.SUCCESS, nil, app.ResponseDataList{
 		List:      data.Data,
 		Page:      data.CurrentPage,
@@ -110,12 +100,10 @@ func (am *AiModelController) Delete(c *gin.Context) {
 		return
 	}
 	// 删除 AI 模型
-	aiModel := ai_model.AiModel{
-		ID: params.ID,
-	}
-	rows, err := aiModel.Delete()
-	if err != nil {
-		appG.Response(http.StatusOK, e.ErrorAiModelDeleteFail, err, nil)
+	aiModelService := ai_model_service.AiModelService{}
+	rows, errInfo := aiModelService.Delete(params.ID)
+	if errInfo.Code != e.SUCCESS {
+		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
 		return
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})

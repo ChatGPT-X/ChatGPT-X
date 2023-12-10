@@ -3,6 +3,7 @@ package controllers
 import (
 	"chatgpt_x/app/models/system_setting"
 	"chatgpt_x/app/requests"
+	"chatgpt_x/app/service/system_setting_service"
 	"chatgpt_x/pkg/e"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -23,7 +24,8 @@ func (ss *SystemSettingController) Update(c *gin.Context) {
 		return
 	}
 	// 更新系统设置
-	systemSettingModel := system_setting.SystemSetting{
+	systemSettingService := system_setting_service.SystemSettingService{}
+	rows, errInfo := systemSettingService.Update(system_setting.SystemSetting{
 		ID:         params.ID,
 		ApiBaseUrl: params.ApiBaseUrl,
 		ApiProxy:   params.ApiProxy,
@@ -31,10 +33,9 @@ func (ss *SystemSettingController) Update(c *gin.Context) {
 		WebBaseUrl: params.WebBaseUrl,
 		WebProxy:   params.WebProxy,
 		WebTimeout: params.WebTimeout,
-	}
-	rows, err := systemSettingModel.Update()
-	if err != nil {
-		appG.Response(http.StatusOK, e.ErrorSystemSettingUpdateFail, err, nil)
+	})
+	if errInfo.Code != e.SUCCESS {
+		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
 		return
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})
@@ -44,9 +45,10 @@ func (ss *SystemSettingController) Update(c *gin.Context) {
 func (ss *SystemSettingController) Detail(c *gin.Context) {
 	appG := ss.GetAppG(c)
 	// 查询系统设置详情
-	systemSettingModel, err := system_setting.GetDetail()
-	if err != nil {
-		appG.Response(http.StatusOK, e.ErrorSystemSettingSelectDetailFail, err, nil)
+	systemSettingService := system_setting_service.SystemSettingService{}
+	systemSettingModel, errInfo := systemSettingService.Detail()
+	if errInfo.Code != e.SUCCESS {
+		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
 		return
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil, systemSettingModel)

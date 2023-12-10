@@ -4,13 +4,11 @@ import (
 	"chatgpt_x/app/models"
 	"chatgpt_x/app/models/user"
 	"chatgpt_x/app/requests"
+	"chatgpt_x/app/service/user_service"
 	"chatgpt_x/pkg/app"
-	"chatgpt_x/pkg/auth"
 	"chatgpt_x/pkg/e"
 	"github.com/gin-gonic/gin"
-	paginator "github.com/yafeng-Soong/gorm-paginator"
 	"net/http"
-	"time"
 )
 
 // UserController 用户控制器。
@@ -27,21 +25,16 @@ func (u *UserController) DoRegister(c *gin.Context) {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
-	// 检查用户名是否重复
-	if user.HasByUsernameExist(params.Username) {
-		appG.Response(http.StatusOK, e.ErrorUserIsExist, nil, nil)
-		return
-	}
-	// 创建用户
-	userModel := user.User{
+	// 用户注册
+	userService := user_service.UserService{}
+	errInfo := userService.DoRegister(user.User{
 		AiTokenID: models.SqlNullUint,
 		Username:  params.Username,
 		Email:     params.Email,
 		Password:  params.Password,
-	}
-	if err := userModel.Create(); err != nil {
-		appG.Response(http.StatusOK, e.ErrorUserCreateFail, err, nil)
-		return
+	})
+	if errInfo.Code != e.SUCCESS {
+		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
 }
@@ -55,42 +48,24 @@ func (u *UserController) DoLogin(c *gin.Context) {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
-	// 检查用户名和密码是否正确
-	userModel, err := user.GetByUsername(params.Username)
-	if err != nil || !user.CheckPassword(params.Password, userModel.Password) {
-		appG.Response(http.StatusOK, e.ErrorIncorrectUsernameOrPassword, err, nil)
-		return
-	}
-	// 检查用户是否被封禁
-	if userModel.Status == user.StatusDisable {
-		appG.Response(http.StatusOK, e.ErrorUserIsDisabled, nil, nil)
-		return
-	}
-	// 更新用户登录时间
-	userModel.LastLoginTime = time.Now()
-	if _, err = userModel.Update(); err != nil {
-		appG.Response(http.StatusOK, e.ErrorUserLoginFail, err, nil)
-		return
-	}
-	// 生成 Token 授权
-	jwt, err := auth.GenerateToken(auth.CustomClaims{
-		UserID:   userModel.ID,
-		IsAdmin:  userModel.IsAdmin,
-		Username: userModel.Username,
-		Email:    userModel.Email,
+	// 用户登录
+	userService := user_service.UserService{}
+	token, errInfo := userService.DoLogin(user.User{
+		Username: params.Username,
+		Password: params.Password,
 	})
-	if err != nil {
-		appG.Response(http.StatusOK, e.ErrorGenerateTokenFail, err, nil)
+	if errInfo.Code != e.SUCCESS {
+		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
 		return
 	}
-	c.Header("Authorization", "Bearer "+jwt)
+	appG.SetAuthorization(token)
 	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
 }
 
 // Logout 用户登出。
 func (u *UserController) Logout(c *gin.Context) {
 	appG := u.GetAppG(c)
-	c.Header("Authorization", "")
+	appG.SetAuthorization("")
 	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
 }
 
@@ -107,13 +82,12 @@ func (u *UserController) List(c *gin.Context) {
 	SetDefaultValue(&params.Page, 1)
 	SetDefaultValue(&params.PageSize, 20)
 	// 查询用户列表
-	userModel := user.User{}
-	pageData, err := userModel.List(params.Page, params.PageSize)
-	if err != nil {
-		appG.Response(http.StatusOK, e.ErrorUserSelectListFail, err, nil)
+	userService := user_service.UserService{}
+	data, errInfo := userService.List(params.Page, params.PageSize)
+	if errInfo.Code != e.SUCCESS {
+		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
 		return
 	}
-	data := pageData.(paginator.Page[user.User])
 	appG.Response(http.StatusOK, e.SUCCESS, nil, app.ResponseDataList{
 		List:      data.Data,
 		Page:      data.CurrentPage,
@@ -133,17 +107,15 @@ func (u *UserController) Update(c *gin.Context) {
 		return
 	}
 	// 更新用户
-	userModel, err := user.Get(params.ID)
-	if err != nil {
-		appG.Response(http.StatusOK, e.ErrorUserSelectDetailFail, err, nil)
-		return
-	}
-	userModel.AiTokenID = params.AiTokenID
-	userModel.Password = params.Password
-	userModel.Status = params.Status
-	rows, err := userModel.Update()
-	if err != nil {
-		appG.Response(http.StatusOK, e.ErrorUserUpdateFail, err, nil)
+	userService := user_service.UserService{}
+	rows, errInfo := userService.Update(user.User{
+		ID:        params.ID,
+		AiTokenID: params.AiTokenID,
+		Password:  params.Password,
+		Status:    params.Status,
+	})
+	if errInfo.Code != e.SUCCESS {
+		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
 		return
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})
@@ -159,12 +131,10 @@ func (u *UserController) Delete(c *gin.Context) {
 		return
 	}
 	// 删除用户
-	userModel := user.User{
-		ID: params.ID,
-	}
-	rows, err := userModel.Delete()
-	if err != nil {
-		appG.Response(http.StatusOK, e.ErrorUserDeleteFail, err, nil)
+	userService := user_service.UserService{}
+	rows, errInfo := userService.Delete(params.ID)
+	if errInfo.Code != e.SUCCESS {
+		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
 		return
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})
