@@ -18,7 +18,11 @@ func Register(engine *gin.Engine) {
 		// 前台接口
 		//userGroup := apiGroup.Group("user", middlewares.CheckLogin())
 		//{
-		//
+		//	backendApiGroup := userGroup.Group("backendApi")
+		//	{
+		//		controller := controllers.OpenaiBackendApiController{}
+		//		backendApiGroup.POST("conversation", controller.Conversation)
+		//	}
 		//}
 
 		// 后台接口
