@@ -12,9 +12,9 @@ func Register(engine *gin.Engine) {
 	{
 		// 免登录接口
 		controller := controllers.UserController{}
-		apiGroup.POST("doRegister", controller.DoRegister) // 用户注册
-		apiGroup.POST("doLogin", controller.DoLogin)       // 用户登录
-		apiGroup.GET("logout", controller.Logout)          // 用户登出
+		apiGroup.POST("register", controller.DoRegister) // 用户注册
+		apiGroup.POST("login", controller.DoLogin)       // 用户登录
+		apiGroup.GET("logout", controller.Logout)        // 用户登出
 		// 前台接口
 		userGroup := apiGroup.Group("user", middlewares.CheckLogin())
 		{
@@ -38,7 +38,7 @@ func Register(engine *gin.Engine) {
 				userGroup.DELETE("delete", controller.Delete) // 删除用户
 			}
 			// AI 模型管理
-			aiModelGroup := adminGroup.Group("aiModel")
+			aiModelGroup := adminGroup.Group("ai-model")
 			{
 				controller := controllers.AiModelController{}
 				aiModelGroup.POST("create", controller.Create)   // 创建 AI 模型
@@ -47,7 +47,7 @@ func Register(engine *gin.Engine) {
 				aiModelGroup.DELETE("delete", controller.Delete) // 删除 AI 模型
 			}
 			// AI 密钥管理
-			aiTokenGroup := adminGroup.Group("aiToken")
+			aiTokenGroup := adminGroup.Group("ai-token")
 			{
 				controller := controllers.AiTokenController{}
 				aiTokenGroup.POST("create", controller.Create)   // 创建 AI 密钥
@@ -56,7 +56,7 @@ func Register(engine *gin.Engine) {
 				aiTokenGroup.DELETE("delete", controller.Delete) // 删除 AI 密钥
 			}
 			// 系统设置管理
-			systemSettingGroup := adminGroup.Group("systemSetting")
+			systemSettingGroup := adminGroup.Group("system-setting")
 			{
 				controller := controllers.SystemSettingController{}
 				systemSettingGroup.GET("detail", controller.Detail) // 查询系统设置详情
