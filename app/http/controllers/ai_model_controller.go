@@ -27,6 +27,7 @@ func (am *AiModelController) Create(c *gin.Context) {
 	// 创建 AI 模型
 	aiModelService := ai_model_service.AiModelService{}
 	errInfo := aiModelService.Create(ai_model.AiModel{
+		Type:      params.Type,
 		AliasName: params.AliasName,
 		Name:      params.Name,
 		Status:    params.Status,
@@ -51,6 +52,7 @@ func (am *AiModelController) Update(c *gin.Context) {
 	aiModelService := ai_model_service.AiModelService{}
 	rows, errInfo := aiModelService.Update(ai_model.AiModel{
 		ID:        params.ID,
+		Type:      params.Type,
 		AliasName: params.AliasName,
 		Name:      params.Name,
 		Status:    params.Status,

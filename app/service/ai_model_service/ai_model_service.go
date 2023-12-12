@@ -22,6 +22,7 @@ func (s *AiModelService) Create(paramsModel ai_model.AiModel) e.ErrInfo {
 	}
 	// 创建 AI 模型
 	aiModel := ai_model.AiModel{
+		Type:      paramsModel.Type,
 		AliasName: paramsModel.AliasName,
 		Name:      paramsModel.Name,
 		Status:    paramsModel.Status,
@@ -47,6 +48,7 @@ func (s *AiModelService) Update(paramsModel ai_model.AiModel) (int64, e.ErrInfo)
 	// 更新 AI 模型
 	aiModel := ai_model.AiModel{
 		ID:        paramsModel.ID,
+		Type:      paramsModel.Type,
 		AliasName: paramsModel.AliasName,
 		Name:      paramsModel.Name,
 		Status:    paramsModel.Status,

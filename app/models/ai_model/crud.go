@@ -45,6 +45,16 @@ func (m *AiModel) List(page, pageSize int64) (any, error) {
 	return p, nil
 }
 
+// Get 根据 ID 获取 AI 模型信息。
+func Get(id uint) (AiModel, error) {
+	var aiModel AiModel
+	if err := model.DB.First(&aiModel, id).Error; err != nil {
+		return AiModel{}, err
+	}
+	return aiModel, nil
+
+}
+
 // HasAiModelExist 通过 AiName 判断 AI 模型是否存在，存在返回 true，不存在返回 false。
 func HasAiModelExist(name string, excludeID int) bool {
 	var aiModel AiModel
