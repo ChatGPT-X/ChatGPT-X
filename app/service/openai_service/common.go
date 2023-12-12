@@ -44,12 +44,12 @@ func SendRequest(reqType, method, url string, headers map[string]string, body an
 	switch reqType {
 	case "web":
 		client = client.SetBaseURL(SystemSetting["WebBaseUrl"].(string))
-		client = client.SetTimeout(time.Duration(SystemSetting["WebTimeout"].(uint)))
+		client = client.SetTimeout(time.Duration(SystemSetting["WebTimeout"].(uint)) * time.Second)
 	case "api":
 		client = client.SetBaseURL(SystemSetting["ApiBaseUrl"].(string))
-		client = client.SetTimeout(time.Duration(SystemSetting["ApiTimeout"].(uint)))
+		client = client.SetTimeout(time.Duration(SystemSetting["ApiTimeout"].(uint)) * time.Second)
 	default:
-		panic("invalid request type")
+		return "", fmt.Errorf("invalid request type: %s", reqType)
 	}
 	request := client.R().SetContext(context.Background())
 	request = request.SetHeaders(headers)
@@ -73,7 +73,7 @@ func SendStreamRequest(reqType, method, url string, headers map[string]string, b
 		client = client.SetBaseURL(SystemSetting["ApiBaseUrl"].(string))
 		client = client.SetTimeout(time.Duration(SystemSetting["ApiTimeout"].(uint)) * time.Second)
 	default:
-		panic("invalid request type")
+		return nil, fmt.Errorf("invalid request type: %s", reqType)
 	}
 	request := client.R().SetContext(context.Background())
 	request = request.SetHeaders(headers)

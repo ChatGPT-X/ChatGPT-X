@@ -21,7 +21,8 @@ func Register(engine *gin.Engine) {
 			openaiWebGroup := userGroup.Group("backend-api")
 			{
 				controller := controllers.OpenaiWebController{}
-				openaiWebGroup.POST("conversation", controller.Conversation)
+				openaiWebGroup.POST("conversation", controller.Conversation)                              // 平台对话
+				openaiWebGroup.PATCH("conversation/:conversation_id", controller.ChangeConversationTitle) // 修改对话标题
 			}
 		}
 

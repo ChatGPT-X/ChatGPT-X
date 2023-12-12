@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"chatgpt_x/app/requests"
 	"chatgpt_x/app/service/openai_service"
 	"chatgpt_x/pkg/e"
 	"chatgpt_x/pkg/logger"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -14,23 +16,22 @@ type OpenaiWebController struct {
 	BaseController
 }
 
-// Conversation WEB 平台对话。
+// Conversation 平台对话。
 func (ow *OpenaiWebController) Conversation(c *gin.Context) {
 	appG := ow.GetAppG(c)
-	c.Writer.Header().Set("Content-Type", "text/event-stream")
-	c.Writer.Header().Set("Cache-Control", "no-cache")
-	c.Writer.Header().Set("Connection", "keep-alive")
-
+	c.Header("Connection", "keep-alive")
+	c.Header("Cache-Control", "no-cache")
+	c.Header("Content-Type", "text/event-stream")
 	// 接收参数
-	var params any
-	err := c.ShouldBindJSON(&params)
+	var paramsJson any
+	err := c.ShouldBindJSON(&paramsJson)
 	if err != nil {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
 	userID := getUserID(c)
 	openaiService := openai_service.WebService{}
-	ch, err := openaiService.Conversation(userID, params)
+	ch, err := openaiService.Conversation(userID, paramsJson)
 	if err != nil {
 		logger.Error(err)
 		return
@@ -38,4 +39,31 @@ func (ow *OpenaiWebController) Conversation(c *gin.Context) {
 	for b := range ch {
 		fmt.Fprintf(c.Writer, "%s\n\n", string(b))
 	}
+}
+
+// ChangeConversationTitle 修改对话标题。
+func (ow *OpenaiWebController) ChangeConversationTitle(c *gin.Context) {
+	appG := ow.GetAppG(c)
+	// 接收参数
+	var params requests.ValidateUUIDv4
+	if err := c.ShouldBindUri(&params); err != nil {
+		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
+		return
+	}
+	var paramsJson any
+	err := c.ShouldBindJSON(&paramsJson)
+	if err != nil {
+		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
+		return
+	}
+	userID := getUserID(c)
+	openaiService := openai_service.WebService{}
+	result, err := openaiService.ChangeConversationTitle(userID, params.ConversationID, paramsJson)
+	if err != nil {
+		appG.Response(http.StatusOK, e.ErrorChangeConversationTitleFail, err, nil)
+		return
+	}
+	var data any
+	json.Unmarshal([]byte(result), &data)
+	appG.Response(http.StatusOK, e.SUCCESS, nil, data)
 }

@@ -33,8 +33,11 @@ var MsgFlags = map[int]string{
 	ErrorAiTokenDeleteFail:             "AI密钥删除失败",
 	ErrorSystemSettingUpdateFail:       "系统设置更新失败",
 	ErrorSystemSettingSelectDetailFail: "系统设置详情查询失败",
-	ErrorSendRequestFail:               "发送请求失败",
-	ErrorAcceptResponseFail:            "接收响应失败",
+	// --------- OpenAI Start ---------
+	ErrorSendRequestFail:             "发送请求失败",
+	ErrorAcceptResponseFail:          "接收响应失败",
+	ErrorChangeConversationTitleFail: "修改对话标题失败",
+	// --------- OpenAI End ---------
 }
 
 // ErrInfo 错误信息结构。
