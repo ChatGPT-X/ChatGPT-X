@@ -16,14 +16,14 @@ func Register(engine *gin.Engine) {
 		apiGroup.POST("doLogin", controller.DoLogin)       // 用户登录
 		apiGroup.GET("logout", controller.Logout)          // 用户登出
 		// 前台接口
-		//userGroup := apiGroup.Group("user", middlewares.CheckLogin())
-		//{
-		//	backendApiGroup := userGroup.Group("backendApi")
-		//	{
-		//		controller := controllers.OpenaiBackendApiController{}
-		//		backendApiGroup.POST("conversation", controller.Conversation)
-		//	}
-		//}
+		userGroup := apiGroup.Group("user", middlewares.CheckLogin())
+		{
+			openaiWebGroup := userGroup.Group("backend-api")
+			{
+				controller := controllers.OpenaiWebController{}
+				openaiWebGroup.POST("conversation", controller.Conversation)
+			}
+		}
 
 		// 后台接口
 		adminGroup := apiGroup.Group("admin", middlewares.CheckAdmin())

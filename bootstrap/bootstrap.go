@@ -14,6 +14,7 @@ func Setup() {
 		SetupMySQL,        // MySQL
 		SetupRedis,        // Redis
 		SetupLogger,       // Logs
+		SetupOpenAI,       // OpenAI
 	)
 }
 
