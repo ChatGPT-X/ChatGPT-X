@@ -1,6 +1,7 @@
 package user_service
 
 import (
+	"chatgpt_x/app/models/ai_token"
 	"chatgpt_x/app/models/user"
 	"chatgpt_x/pkg/auth"
 	"chatgpt_x/pkg/e"
@@ -48,6 +49,11 @@ func (s *UserService) DoLogin(paramsModel user.User) (string, e.ErrInfo) {
 			Msg:  fmt.Errorf("user: %s is disabled, login fail", paramsModel.Username),
 		}
 	}
+	// 获取用户 ai_token 信息，后面生成 jwt 的时候要记录该账号的 AI 密钥的类型
+	aiTokenModel := ai_token.AiToken{}
+	if userModel.AiTokenID != nil {
+		aiTokenModel, _ = ai_token.Get(userModel.ID)
+	}
 	// 更新用户登录时间
 	userModel.LastLoginTime = time.Now()
 	if _, err = userModel.Update(); err != nil {
@@ -59,6 +65,7 @@ func (s *UserService) DoLogin(paramsModel user.User) (string, e.ErrInfo) {
 	// 生成 Token 授权
 	token, err := auth.GenerateToken(auth.CustomClaims{
 		UserID:   userModel.ID,
+		UrlType:  aiTokenModel.Type,
 		IsAdmin:  userModel.IsAdmin,
 		Username: userModel.Username,
 		Email:    userModel.Email,

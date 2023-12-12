@@ -45,6 +45,15 @@ func (m *AiToken) List(page, pageSize int64) (any, error) {
 	return p, nil
 }
 
+// Get 根据 ID 获取密钥信息。
+func Get(id uint) (AiToken, error) {
+	var aiToken AiToken
+	if err := model.DB.First(&aiToken, id).Error; err != nil {
+		return AiToken{}, err
+	}
+	return aiToken, nil
+}
+
 // HasTokenExist 判断密钥是否存在，存在返回 true，不存在返回 false。
 func HasTokenExist(token string, excludeID int) bool {
 	var aiTokenModel AiToken
