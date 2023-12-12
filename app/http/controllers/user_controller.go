@@ -35,6 +35,7 @@ func (u *UserController) DoRegister(c *gin.Context) {
 	})
 	if errInfo.Code != e.SUCCESS {
 		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
+		return
 	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
 }
