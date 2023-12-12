@@ -32,8 +32,11 @@ func (m *AiModel) Delete() (rowsAffected int64, err error) {
 }
 
 // List 查询 AI 模型列表。
-func (m *AiModel) List(page, pageSize int64) (any, error) {
+func (m *AiModel) List(aiModelType uint, page, pageSize int64) (any, error) {
 	db := model.DB
+	if aiModelType != 0 {
+		db = db.Where("type = ?", aiModelType)
+	}
 	p := paginator.Page[AiModel]{
 		CurrentPage: page,
 		PageSize:    pageSize,
@@ -52,7 +55,6 @@ func Get(id uint) (AiModel, error) {
 		return AiModel{}, err
 	}
 	return aiModel, nil
-
 }
 
 // HasAiModelExist 通过 AiName 判断 AI 模型是否存在，存在返回 true，不存在返回 false。

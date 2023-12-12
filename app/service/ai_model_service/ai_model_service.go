@@ -2,7 +2,6 @@ package ai_model_service
 
 import (
 	"chatgpt_x/app/models/ai_model"
-	"chatgpt_x/app/models/user"
 	"chatgpt_x/pkg/e"
 	"fmt"
 	paginator "github.com/yafeng-Soong/gorm-paginator"
@@ -64,9 +63,9 @@ func (s *AiModelService) Update(paramsModel ai_model.AiModel) (int64, e.ErrInfo)
 }
 
 // List 查询 AI 模型列表。
-func (s *AiModelService) List(page, pageSize int64) (paginator.Page[ai_model.AiModel], e.ErrInfo) {
-	aiModel := user.User{}
-	pageData, err := aiModel.List(page, pageSize)
+func (s *AiModelService) List(aiModelType uint, page, pageSize int64) (paginator.Page[ai_model.AiModel], e.ErrInfo) {
+	aiModel := ai_model.AiModel{}
+	pageData, err := aiModel.List(aiModelType, page, pageSize)
 	if err != nil {
 		return paginator.Page[ai_model.AiModel]{}, e.ErrInfo{
 			Code: e.ErrorAiModelSelectListFail,

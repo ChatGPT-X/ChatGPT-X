@@ -78,7 +78,7 @@ func (am *AiModelController) List(c *gin.Context) {
 	SetDefaultValue(&params.PageSize, 20)
 	// 查询 AI 模型列表
 	aiModelService := ai_model_service.AiModelService{}
-	data, errInfo := aiModelService.List(params.Page, params.PageSize)
+	data, errInfo := aiModelService.List(params.Type, params.Page, params.PageSize)
 	if errInfo.Code != e.SUCCESS {
 		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
 		return
