@@ -33,6 +33,7 @@ func (ow *OpenaiWebController) Conversation(c *gin.Context) {
 	ch, err := openaiService.Conversation(userID, params)
 	if err != nil {
 		logger.Error(err)
+		return
 	}
 	for b := range ch {
 		fmt.Fprintf(c.Writer, "%s\n\n", string(b))
