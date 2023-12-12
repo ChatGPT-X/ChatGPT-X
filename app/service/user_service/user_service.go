@@ -64,11 +64,11 @@ func (s *UserService) DoLogin(paramsModel user.User) (string, e.ErrInfo) {
 	}
 	// 生成 Token 授权
 	token, err := auth.GenerateToken(auth.CustomClaims{
-		UserID:   userModel.ID,
-		UrlType:  aiTokenModel.Type,
-		IsAdmin:  userModel.IsAdmin,
-		Username: userModel.Username,
-		Email:    userModel.Email,
+		UserID:      userModel.ID,
+		AiTokenType: aiTokenModel.Type,
+		IsAdmin:     userModel.IsAdmin,
+		Username:    userModel.Username,
+		Email:       userModel.Email,
 	})
 	if err != nil {
 		return "", e.ErrInfo{
