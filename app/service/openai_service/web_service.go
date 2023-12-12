@@ -8,7 +8,7 @@ func (s *WebService) Conversation(userID uint, body any) (<-chan []byte, error) 
 	if err != nil {
 		return nil, err
 	}
-	url := WebBaseUrl + "/conversation"
+	url := "/backend-api/conversation"
 	headers := map[string]string{
 		"User-Agent":    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
 		"Referer":       "https://chat.openai.com",
@@ -17,7 +17,7 @@ func (s *WebService) Conversation(userID uint, body any) (<-chan []byte, error) 
 		"Accept":        "text/event-stream",
 		"Authorization": "Bearer " + aiTokenModel.Token,
 	}
-	ch, err := SendStreamRequest("POST", url, headers, body)
+	ch, err := SendStreamRequest("web", "POST", url, headers, body)
 	if err != nil {
 		return nil, err
 	}

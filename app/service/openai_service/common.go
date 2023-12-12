@@ -10,13 +10,10 @@ import (
 	"fmt"
 	"github.com/imroc/req/v3"
 	"io"
+	"time"
 )
 
-// WebBaseUrl WEB 平台的 URL。
-var WebBaseUrl string
-
-// ApiBaseUrl API 平台的 URL。
-var ApiBaseUrl string
+var SystemSetting map[string]any
 
 // GetAiTokenFromUser 根据用户 ID 获取 AI 密钥。
 func GetAiTokenFromUser(userID uint) (ai_token.AiToken, error) {
@@ -42,8 +39,18 @@ func GetAiTokenFromUser(userID uint) (ai_token.AiToken, error) {
 }
 
 // SendRequest 发送请求。
-func SendRequest(method, url string, headers map[string]string, body any) (string, error) {
+func SendRequest(reqType, method, url string, headers map[string]string, body any) (string, error) {
 	client := req.C()
+	switch reqType {
+	case "web":
+		client = client.SetBaseURL(SystemSetting["WebBaseUrl"].(string))
+		client = client.SetTimeout(time.Duration(SystemSetting["WebTimeout"].(uint)))
+	case "api":
+		client = client.SetBaseURL(SystemSetting["ApiBaseUrl"].(string))
+		client = client.SetTimeout(time.Duration(SystemSetting["ApiTimeout"].(uint)))
+	default:
+		panic("invalid request type")
+	}
 	request := client.R().SetContext(context.Background())
 	request = request.SetHeaders(headers)
 	request = request.SetBody(body)
@@ -56,8 +63,18 @@ func SendRequest(method, url string, headers map[string]string, body any) (strin
 }
 
 // SendStreamRequest 发送流式请求。
-func SendStreamRequest(method, url string, headers map[string]string, body any) (<-chan []byte, error) {
+func SendStreamRequest(reqType, method, url string, headers map[string]string, body any) (<-chan []byte, error) {
 	client := req.C()
+	switch reqType {
+	case "web":
+		client = client.SetBaseURL(SystemSetting["WebBaseUrl"].(string))
+		client = client.SetTimeout(time.Duration(SystemSetting["WebTimeout"].(uint)) * time.Second)
+	case "api":
+		client = client.SetBaseURL(SystemSetting["ApiBaseUrl"].(string))
+		client = client.SetTimeout(time.Duration(SystemSetting["ApiTimeout"].(uint)) * time.Second)
+	default:
+		panic("invalid request type")
+	}
 	request := client.R().SetContext(context.Background())
 	request = request.SetHeaders(headers)
 	request = request.SetBody(body)
