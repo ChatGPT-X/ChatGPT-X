@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/chenyahui/gin-cache/persist"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"time"
 )
 
