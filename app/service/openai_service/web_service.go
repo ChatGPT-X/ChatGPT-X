@@ -24,6 +24,9 @@ func (s *WebService) ChangeConversationTitle(userID uint, conversationID string,
 	url := "/backend-api/conversation/" + conversationID
 	// 获取当前用户的 token
 	headers, err := GetBasicHeaders(userID, false)
+	if err != nil {
+		return "", err
+	}
 	// 发送请求
 	result, err := SendRequest("web", "PATCH", url, headers, body)
 	if err != nil {
