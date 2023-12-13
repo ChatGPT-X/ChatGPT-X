@@ -32,6 +32,7 @@ func Register(engine *gin.Engine) {
 			// 用户管理
 			userGroup := adminGroup.Group("user")
 			{
+
 				controller := controllers.UserController{}
 				userGroup.GET("list", controller.List)        // 查询用户列表
 				userGroup.PUT("update", controller.Update)    // 修改用户
@@ -56,11 +57,11 @@ func Register(engine *gin.Engine) {
 				aiTokenGroup.DELETE("delete", controller.Delete) // 删除 AI 密钥
 			}
 			// 系统设置管理
-			systemSettingGroup := adminGroup.Group("system-setting")
+			settingGroup := adminGroup.Group("setting")
 			{
-				controller := controllers.SystemSettingController{}
-				systemSettingGroup.GET("detail", controller.Detail) // 查询系统设置详情
-				systemSettingGroup.PUT("update", controller.Update) // 更新系统设置
+				controller := controllers.SettingController{}
+				settingGroup.GET("detail", controller.Detail) // 查询系统设置详情
+				settingGroup.PUT("update", controller.Update) // 更新系统设置
 			}
 		}
 	}

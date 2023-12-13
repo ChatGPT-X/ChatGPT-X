@@ -1,9 +1,9 @@
-package system_setting
+package setting
 
 import "time"
 
-// 系统设置表
-type SystemSetting struct {
+// 设置表
+type Setting struct {
 	ID         uint      `gorm:"column:id;type:int(11) unsigned;primary_key;AUTO_INCREMENT" json:"id"`
 	ApiBaseUrl string    `gorm:"column:api_base_url;type:varchar(255);NOT NULL" json:"api_base_url"`                      // api 基础地址
 	ApiProxy   string    `gorm:"column:api_proxy;type:varchar(255);NOT NULL" json:"api_proxy"`                            // api 代理地址
@@ -15,6 +15,6 @@ type SystemSetting struct {
 	CreateTime time.Time `gorm:"column:create_time;type:timestamp;default:CURRENT_TIMESTAMP;NOT NULL" json:"create_time"` // 创建时间
 }
 
-func (m *SystemSetting) TableName() string {
-	return "t_system_settings"
+func (m *Setting) TableName() string {
+	return "t_settings"
 }

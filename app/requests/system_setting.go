@@ -1,7 +1,7 @@
 package requests
 
-// ValidateSystemSettingUpdate 更新系统设置表单验证。
-type ValidateSystemSettingUpdate struct {
+// ValidateSettingUpdate 更新系统设置表单验证。
+type ValidateSettingUpdate struct {
 	ID         uint   `form:"id" binding:"required,numeric"`
 	ApiBaseUrl string `form:"api_base_url" binding:"required,url,min=1,max=255"`
 	ApiProxy   string `form:"api_proxy" binding:"min=1,max=255"`

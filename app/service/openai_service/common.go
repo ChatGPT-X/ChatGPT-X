@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-var SystemSetting map[string]any
+var Setting map[string]any
 
 // GetAiTokenFromUser 根据用户 ID 获取 AI 密钥。
 func GetAiTokenFromUser(userID uint) (ai_token.AiToken, error) {
@@ -43,11 +43,11 @@ func SendRequest(reqType, method, url string, headers map[string]string, body an
 	client := req.C()
 	switch reqType {
 	case "web":
-		client = client.SetBaseURL(SystemSetting["WebBaseUrl"].(string))
-		client = client.SetTimeout(time.Duration(SystemSetting["WebTimeout"].(uint)) * time.Second)
+		client = client.SetBaseURL(Setting["WebBaseUrl"].(string))
+		client = client.SetTimeout(time.Duration(Setting["WebTimeout"].(uint)) * time.Second)
 	case "api":
-		client = client.SetBaseURL(SystemSetting["ApiBaseUrl"].(string))
-		client = client.SetTimeout(time.Duration(SystemSetting["ApiTimeout"].(uint)) * time.Second)
+		client = client.SetBaseURL(Setting["ApiBaseUrl"].(string))
+		client = client.SetTimeout(time.Duration(Setting["ApiTimeout"].(uint)) * time.Second)
 	default:
 		return "", fmt.Errorf("invalid request type: %s", reqType)
 	}
@@ -67,11 +67,11 @@ func SendStreamRequest(reqType, method, url string, headers map[string]string, b
 	client := req.C()
 	switch reqType {
 	case "web":
-		client = client.SetBaseURL(SystemSetting["WebBaseUrl"].(string))
-		client = client.SetTimeout(time.Duration(SystemSetting["WebTimeout"].(uint)) * time.Second)
+		client = client.SetBaseURL(Setting["WebBaseUrl"].(string))
+		client = client.SetTimeout(time.Duration(Setting["WebTimeout"].(uint)) * time.Second)
 	case "api":
-		client = client.SetBaseURL(SystemSetting["ApiBaseUrl"].(string))
-		client = client.SetTimeout(time.Duration(SystemSetting["ApiTimeout"].(uint)) * time.Second)
+		client = client.SetBaseURL(Setting["ApiBaseUrl"].(string))
+		client = client.SetTimeout(time.Duration(Setting["ApiTimeout"].(uint)) * time.Second)
 	default:
 		return nil, fmt.Errorf("invalid request type: %s", reqType)
 	}

@@ -1,31 +1,31 @@
 package controllers
 
 import (
-	"chatgpt_x/app/models/system_setting"
+	"chatgpt_x/app/models/setting"
 	"chatgpt_x/app/requests"
-	"chatgpt_x/app/service/system_setting_service"
+	"chatgpt_x/app/service/setting_service"
 	"chatgpt_x/pkg/e"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-// SystemSettingController 系统设置控制器。
-type SystemSettingController struct {
+// SettingController 系统设置控制器。
+type SettingController struct {
 	BaseController
 }
 
 // Update 更新系统设置。
-func (ss *SystemSettingController) Update(c *gin.Context) {
-	appG := ss.GetAppG(c)
+func (s *SettingController) Update(c *gin.Context) {
+	appG := s.GetAppG(c)
 	// 表单验证
-	var params requests.ValidateSystemSettingUpdate
+	var params requests.ValidateSettingUpdate
 	if err := c.ShouldBind(&params); err != nil {
 		appG.Response(http.StatusOK, e.InvalidParams, err, nil)
 		return
 	}
 	// 更新系统设置
-	systemSettingService := system_setting_service.SystemSettingService{}
-	rows, errInfo := systemSettingService.Update(system_setting.SystemSetting{
+	settingService := setting_service.SettingService{}
+	rows, errInfo := settingService.Update(setting.Setting{
 		ID:         params.ID,
 		ApiBaseUrl: params.ApiBaseUrl,
 		ApiProxy:   params.ApiProxy,
@@ -42,14 +42,14 @@ func (ss *SystemSettingController) Update(c *gin.Context) {
 }
 
 // Detail 查询系统设置详情。
-func (ss *SystemSettingController) Detail(c *gin.Context) {
-	appG := ss.GetAppG(c)
+func (s *SettingController) Detail(c *gin.Context) {
+	appG := s.GetAppG(c)
 	// 查询系统设置详情
-	systemSettingService := system_setting_service.SystemSettingService{}
-	systemSettingModel, errInfo := systemSettingService.Detail()
+	settingService := setting_service.SettingService{}
+	settingModel, errInfo := settingService.Detail()
 	if errInfo.Code != e.SUCCESS {
 		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
 		return
 	}
-	appG.Response(http.StatusOK, e.SUCCESS, nil, systemSettingModel)
+	appG.Response(http.StatusOK, e.SUCCESS, nil, settingModel)
 }
