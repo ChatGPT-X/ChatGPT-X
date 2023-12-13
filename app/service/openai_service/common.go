@@ -19,6 +19,26 @@ import (
 
 var ctx = context.Background()
 
+func GetBasicHeaders(userID uint, isEventStream bool) (map[string]string, error) {
+	// 获取当前用户的 token
+	aiTokenModel, err := GetAiTokenFromUser(userID)
+	if err != nil {
+		return nil, err
+	}
+	headers := map[string]string{
+		"Authorization": "Bearer " + aiTokenModel.Token,
+		"Content-Type":  "application/json; charset=utf-8",
+		"User-Agent":    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+		"Referer":       "https://chat.openai.com",
+		"Origin":        "https://chat.openai.com",
+		"Cache-Control": "no-cache",
+	}
+	if isEventStream {
+		headers["Accept"] = "text/event-stream"
+	}
+	return headers, nil
+}
+
 // GetAiTokenFromUser 根据用户 ID 获取 AI 密钥。
 func GetAiTokenFromUser(userID uint) (ai_token.AiToken, error) {
 	// 获取用户信息
@@ -42,7 +62,7 @@ func GetAiTokenFromUser(userID uint) (ai_token.AiToken, error) {
 	return aiTokenModel, nil
 }
 
-// clintSetting 设置请求客户端。
+// clintSetting 设置客户端（基础地址、代理、超时时间等）。
 func clintSetting(reqType string, client *req.Client) (*req.Client, error) {
 	rdb := rds.RDB
 	var baseurl, proxy, timeout string
@@ -87,7 +107,7 @@ func clintSetting(reqType string, client *req.Client) (*req.Client, error) {
 	return client, nil
 }
 
-// SendRequest 发送请求。
+// SendRequest 发送常规请求。
 func SendRequest(reqType, method, url string, headers map[string]string, body any) (string, error) {
 	client := req.C()
 	client, err := clintSetting(reqType, client)
