@@ -5,15 +5,19 @@ import (
 	"chatgpt_x/app/models/ai_model"
 	"chatgpt_x/app/models/ai_token"
 	"chatgpt_x/app/models/user"
+	"chatgpt_x/app/service"
 	"chatgpt_x/pkg/logger"
+	rds "chatgpt_x/pkg/redis"
 	"context"
 	"fmt"
 	"github.com/imroc/req/v3"
 	"io"
+	"net/http"
+	"net/url"
 	"time"
 )
 
-var Setting map[string]any
+var ctx = context.Background()
 
 // GetAiTokenFromUser 根据用户 ID 获取 AI 密钥。
 func GetAiTokenFromUser(userID uint) (ai_token.AiToken, error) {
@@ -38,18 +42,57 @@ func GetAiTokenFromUser(userID uint) (ai_token.AiToken, error) {
 	return aiTokenModel, nil
 }
 
+// clintSetting 设置请求客户端。
+func clintSetting(reqType string, client *req.Client) (*req.Client, error) {
+	rdb := rds.RDB
+	var baseurl, proxy, timeout string
+	switch reqType {
+	case "web":
+		baseurl = service.RedisSettingOpenaiWebBaseUrl
+		proxy = service.RedisSettingOpenaiWebProxy
+		timeout = service.RedisSettingOpenaiWebTimeout
+	case "api":
+		baseurl = service.RedisSettingOpenaiApiBaseUrl
+		proxy = service.RedisSettingOpenaiApiProxy
+		timeout = service.RedisSettingOpenaiApiTimeout
+	default:
+		return nil, fmt.Errorf("invalid request type: %s", reqType)
+	}
+	// 设置基础 URL
+	urlVal, err := rdb.Get(ctx, baseurl).Result()
+	if err != nil {
+		return nil, err
+	}
+	client = client.SetBaseURL(urlVal)
+	// 设置代理
+	proxyVal, err := rdb.Get(ctx, proxy).Result()
+	if err != nil {
+		return nil, err
+	}
+	client = client.SetProxy(func(request *http.Request) (*url.URL, error) {
+		// 注意！这里为空的时候不要去设置代理
+		// 否则报 tcp: dial tcp :0: connect: can't assign requested address 错误
+		if proxyVal == "" {
+			return nil, nil
+		}
+		return url.Parse(proxyVal)
+	})
+
+	// 设置超时时间
+	val, err := rdb.Get(ctx, timeout).Int()
+	if err != nil {
+		return nil, err
+	}
+	client = client.SetTimeout(time.Duration(val) * time.Second)
+	return client, nil
+}
+
 // SendRequest 发送请求。
 func SendRequest(reqType, method, url string, headers map[string]string, body any) (string, error) {
 	client := req.C()
-	switch reqType {
-	case "web":
-		client = client.SetBaseURL(Setting["WebBaseUrl"].(string))
-		client = client.SetTimeout(time.Duration(Setting["WebTimeout"].(uint)) * time.Second)
-	case "api":
-		client = client.SetBaseURL(Setting["ApiBaseUrl"].(string))
-		client = client.SetTimeout(time.Duration(Setting["ApiTimeout"].(uint)) * time.Second)
-	default:
-		return "", fmt.Errorf("invalid request type: %s", reqType)
+	client, err := clintSetting(reqType, client)
+	if err != nil {
+		return "", err
 	}
 	request := client.R().SetContext(context.Background())
 	request = request.SetHeaders(headers)
@@ -65,15 +108,9 @@ func SendRequest(reqType, method, url string, headers map[string]string, body an
 // SendStreamRequest 发送流式请求。
 func SendStreamRequest(reqType, method, url string, headers map[string]string, body any) (<-chan []byte, error) {
 	client := req.C()
-	switch reqType {
-	case "web":
-		client = client.SetBaseURL(Setting["WebBaseUrl"].(string))
-		client = client.SetTimeout(time.Duration(Setting["WebTimeout"].(uint)) * time.Second)
-	case "api":
-		client = client.SetBaseURL(Setting["ApiBaseUrl"].(string))
-		client = client.SetTimeout(time.Duration(Setting["ApiTimeout"].(uint)) * time.Second)
-	default:
-		return nil, fmt.Errorf("invalid request type: %s", reqType)
+	client, err := clintSetting(reqType, client)
+	if err != nil {
+		return nil, err
 	}
 	request := client.R().SetContext(context.Background())
 	request = request.SetHeaders(headers)

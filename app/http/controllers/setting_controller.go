@@ -38,6 +38,12 @@ func (s *SettingController) Update(c *gin.Context) {
 		appG.Response(http.StatusOK, errInfo.Code, errInfo.Msg, nil)
 		return
 	}
+	// 重新从将配置信息读取到 Redis 使用
+	err := settingService.LoadSettingsToRedis()
+	if err.Code != e.SUCCESS {
+		appG.Response(http.StatusOK, err.Code, err.Msg, nil)
+		return
+	}
 	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})
 }
 
