@@ -58,6 +58,7 @@ func (s *SettingService) LoadSettingsToRedis() e.ErrInfo {
 			Msg:  err,
 		}
 	}
+	// 将系统配置写入 Redis
 	rdb := rds.RDB
 	rdb.MSet(ctx, map[string]interface{}{
 		service.RedisSettingOpenaiWebBaseUrl: settingModel.WebBaseUrl,
