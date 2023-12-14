@@ -22,6 +22,7 @@ func Register(engine *gin.Engine) {
 			{
 				controller := controllers.OpenaiWebController{}
 				openaiWebGroup.POST("conversation", controller.Conversation)                              // 平台对话
+				openaiWebGroup.GET("conversations", controller.GetConversationHistory)                    // 获取对话历史
 				openaiWebGroup.PATCH("conversation/:conversation_id", controller.ChangeConversationTitle) // 修改对话标题
 			}
 		}

@@ -36,6 +36,7 @@ var MsgFlags = map[int]string{
 	// --------- OpenAI Start ---------
 	ErrorSendRequestFail:             "发送请求失败",
 	ErrorAcceptResponseFail:          "接收响应失败",
+	ErrorGetConversationHistoryFail:  "获取对话历史失败",
 	ErrorChangeConversationTitleFail: "修改对话标题失败",
 	// --------- OpenAI End ---------
 }

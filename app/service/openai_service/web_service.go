@@ -1,5 +1,10 @@
 package openai_service
 
+import (
+	"fmt"
+	"strconv"
+)
+
 // WebService OPENAI WEB 接口服务。
 type WebService struct{}
 
@@ -17,6 +22,23 @@ func (s *WebService) Conversation(userID uint, body any) (<-chan []byte, error) 
 		return nil, err
 	}
 	return ch, nil
+}
+
+// GetConversationHistory 获取对话历史。
+func (s *WebService) GetConversationHistory(userID uint, offset, limit int) (string, error) {
+	url := "/backend-api/conversations?offset=%s&limit=%s&order=updated"
+	url = fmt.Sprintf(url, strconv.Itoa(offset), strconv.Itoa(limit))
+	// 获取 headers
+	header, err := GetBasicHeaders(userID, false)
+	if err != nil {
+		return "", err
+	}
+	// 发送请求
+	result, err := SendRequest("web", "GET", url, header, nil)
+	if err != nil {
+		return "", err
+	}
+	return result, nil
 }
 
 // ChangeConversationTitle 修改对话标题。
