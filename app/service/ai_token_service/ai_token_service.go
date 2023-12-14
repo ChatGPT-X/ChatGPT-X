@@ -62,7 +62,7 @@ func (s *AiTokenService) Update(paramsModel ai_token.AiToken) (int64, e.ErrInfo)
 	return rows, e.ErrInfo{Code: e.SUCCESS}
 }
 
-// List 查询 AI 密钥列表。
+// List 获取 AI 密钥列表。
 func (s *AiTokenService) List(page, pageSize int64) (paginator.Page[ai_token.AiToken], e.ErrInfo) {
 	aiTokenModel := ai_token.AiToken{}
 	pageData, err := aiTokenModel.List(page, pageSize)

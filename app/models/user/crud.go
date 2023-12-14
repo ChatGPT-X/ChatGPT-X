@@ -32,7 +32,7 @@ func (m *User) Delete() (rowsAffected int64, err error) {
 	return result.RowsAffected, nil
 }
 
-// List 查询用户列表。
+// List 获取用户列表。
 func (m *User) List(page, pageSize int64) (any, error) {
 	db := model.DB.Omit("password")
 	p := paginator.Page[User]{

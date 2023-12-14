@@ -64,7 +64,7 @@ func (am *AiModelController) Update(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})
 }
 
-// List 查询 AI 模型列表。
+// List 获取 AI 模型列表。
 func (am *AiModelController) List(c *gin.Context) {
 	appG := am.GetAppG(c)
 	// 表单验证
@@ -76,7 +76,7 @@ func (am *AiModelController) List(c *gin.Context) {
 	// 设置默认值
 	SetDefaultValue(&params.Page, 1)
 	SetDefaultValue(&params.PageSize, 20)
-	// 查询 AI 模型列表
+	// 获取 AI 模型列表
 	aiModelService := ai_model_service.AiModelService{}
 	data, errInfo := aiModelService.List(params.Type, params.Page, params.PageSize)
 	if errInfo.Code != e.SUCCESS {

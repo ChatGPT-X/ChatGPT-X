@@ -36,7 +36,7 @@ func (s *SettingService) Update(paramsModel setting.Setting) (int64, e.ErrInfo) 
 	return rows, e.ErrInfo{Code: e.SUCCESS}
 }
 
-// Detail 查询系统设置详情。
+// Detail 获取系统设置详情。
 func (s *SettingService) Detail() (setting.Setting, e.ErrInfo) {
 	settingModel, err := setting.GetDetail()
 	if err != nil {

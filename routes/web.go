@@ -35,7 +35,7 @@ func Register(engine *gin.Engine) {
 			{
 
 				controller := controllers.UserController{}
-				userGroup.GET("list", controller.List)        // 查询用户列表
+				userGroup.GET("list", controller.List)        // 获取用户列表
 				userGroup.PUT("update", controller.Update)    // 修改用户
 				userGroup.DELETE("delete", controller.Delete) // 删除用户
 			}
@@ -45,7 +45,7 @@ func Register(engine *gin.Engine) {
 				controller := controllers.AiModelController{}
 				aiModelGroup.POST("create", controller.Create)   // 创建 AI 模型
 				aiModelGroup.PUT("update", controller.Update)    // 修改 AI 模型
-				aiModelGroup.GET("list", controller.List)        // 查询 AI 模型列表
+				aiModelGroup.GET("list", controller.List)        // 获取 AI 模型列表
 				aiModelGroup.DELETE("delete", controller.Delete) // 删除 AI 模型
 			}
 			// AI 密钥管理
@@ -54,14 +54,14 @@ func Register(engine *gin.Engine) {
 				controller := controllers.AiTokenController{}
 				aiTokenGroup.POST("create", controller.Create)   // 创建 AI 密钥
 				aiTokenGroup.PUT("update", controller.Update)    // 修改 AI 密钥
-				aiTokenGroup.GET("list", controller.List)        // 查询 AI 密钥列表
+				aiTokenGroup.GET("list", controller.List)        // 获取 AI 密钥列表
 				aiTokenGroup.DELETE("delete", controller.Delete) // 删除 AI 密钥
 			}
 			// 系统设置管理
 			settingGroup := adminGroup.Group("setting")
 			{
 				controller := controllers.SettingController{}
-				settingGroup.GET("detail", controller.Detail) // 查询系统设置详情
+				settingGroup.GET("detail", controller.Detail) // 获取系统设置详情
 				settingGroup.PUT("update", controller.Update) // 更新系统设置
 			}
 		}

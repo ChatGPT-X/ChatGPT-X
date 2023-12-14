@@ -31,7 +31,7 @@ func (m *AiToken) Delete() (rowsAffected int64, err error) {
 	return result.RowsAffected, nil
 }
 
-// List 查询密钥列表。
+// List 获取密钥列表。
 func (m *AiToken) List(page, pageSize int64) (any, error) {
 	db := model.DB
 	p := paginator.Page[AiToken]{

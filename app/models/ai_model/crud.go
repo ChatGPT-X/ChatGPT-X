@@ -31,7 +31,7 @@ func (m *AiModel) Delete() (rowsAffected int64, err error) {
 	return result.RowsAffected, nil
 }
 
-// List 查询 AI 模型列表。
+// List 获取 AI 模型列表。
 func (m *AiModel) List(aiModelType uint, page, pageSize int64) (any, error) {
 	db := model.DB
 	if aiModelType != 0 {

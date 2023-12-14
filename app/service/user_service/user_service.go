@@ -79,7 +79,7 @@ func (s *UserService) DoLogin(paramsModel user.User) (string, e.ErrInfo) {
 	return token, e.ErrInfo{Code: e.SUCCESS}
 }
 
-// List 查询用户列表。
+// List 获取用户列表。
 func (s *UserService) List(page, pageSize int64) (paginator.Page[user.User], e.ErrInfo) {
 	userModel := user.User{}
 	pageData, err := userModel.List(page, pageSize)

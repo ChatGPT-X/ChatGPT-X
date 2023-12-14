@@ -47,10 +47,10 @@ func (s *SettingController) Update(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})
 }
 
-// Detail 查询系统设置详情。
+// Detail 获取系统设置详情。
 func (s *SettingController) Detail(c *gin.Context) {
 	appG := s.GetAppG(c)
-	// 查询系统设置详情
+	// 获取系统设置详情
 	settingService := setting_service.SettingService{}
 	settingModel, errInfo := settingService.Detail()
 	if errInfo.Code != e.SUCCESS {

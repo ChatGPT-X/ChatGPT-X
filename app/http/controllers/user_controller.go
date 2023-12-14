@@ -70,7 +70,7 @@ func (u *UserController) Logout(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, nil, nil)
 }
 
-// List 查询用户列表。
+// List 获取用户列表。
 func (u *UserController) List(c *gin.Context) {
 	appG := u.GetAppG(c)
 	// 表单验证
@@ -82,7 +82,7 @@ func (u *UserController) List(c *gin.Context) {
 	// 设置默认值
 	SetDefaultValue(&params.Page, 1)
 	SetDefaultValue(&params.PageSize, 20)
-	// 查询用户列表
+	// 获取用户列表
 	userService := user_service.UserService{}
 	data, errInfo := userService.List(params.Page, params.PageSize)
 	if errInfo.Code != e.SUCCESS {

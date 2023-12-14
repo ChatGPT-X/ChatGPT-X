@@ -62,7 +62,7 @@ func (s *AiModelService) Update(paramsModel ai_model.AiModel) (int64, e.ErrInfo)
 	return rows, e.ErrInfo{Code: e.SUCCESS}
 }
 
-// List 查询 AI 模型列表。
+// List 获取 AI 模型列表。
 func (s *AiModelService) List(aiModelType uint, page, pageSize int64) (paginator.Page[ai_model.AiModel], e.ErrInfo) {
 	aiModel := ai_model.AiModel{}
 	pageData, err := aiModel.List(aiModelType, page, pageSize)

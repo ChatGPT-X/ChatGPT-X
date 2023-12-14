@@ -17,7 +17,7 @@ type ValidateAiTokenUpdate struct {
 	Status string `form:"status" binding:"required,oneof=y n"`
 }
 
-// ValidateAiTokenList AI 密钥查询列表验证。
+// ValidateAiTokenList AI 密钥获取列表验证。
 type ValidateAiTokenList struct {
 	Page     int64 `form:"page" binding:"numeric"`
 	PageSize int64 `form:"page_size" binding:"numeric"`

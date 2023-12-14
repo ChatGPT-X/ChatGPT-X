@@ -64,7 +64,7 @@ func (at *AiTokenController) Update(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, nil, gin.H{"rows": rows})
 }
 
-// List 查询 AI 密钥列表。
+// List 获取 AI 密钥列表。
 func (at *AiTokenController) List(c *gin.Context) {
 	appG := at.GetAppG(c)
 	// 表单验证
@@ -76,7 +76,7 @@ func (at *AiTokenController) List(c *gin.Context) {
 	// 设置默认值
 	SetDefaultValue(&params.Page, 1)
 	SetDefaultValue(&params.PageSize, 20)
-	// 查询 AI 密钥列表
+	// 获取 AI 密钥列表
 	aiTokenService := ai_token_service.AiTokenService{}
 	data, errInfo := aiTokenService.List(params.Page, params.PageSize)
 	if errInfo.Code != e.SUCCESS {
