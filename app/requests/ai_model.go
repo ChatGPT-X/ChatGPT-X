@@ -2,7 +2,7 @@ package requests
 
 // ValidateAiModelCreate AI 模型创建验证。
 type ValidateAiModelCreate struct {
-	Type      uint   `form:"type" binding:"required,oneof=1 2"`
+	Type      string `form:"type" binding:"required,oneof=web api"`
 	AliasName string `form:"alias_name" binding:"required,min=1,max=30"`
 	Name      string `form:"name" binding:"required,min=1,max=30"`
 	Status    string `form:"status" binding:"required,oneof=y n"`
@@ -11,7 +11,7 @@ type ValidateAiModelCreate struct {
 // ValidateAiModelUpdate AI 模型更新验证。
 type ValidateAiModelUpdate struct {
 	ID        uint   `form:"id" binding:"required,numeric"`
-	Type      uint   `form:"type" binding:"required,oneof=1 2"`
+	Type      string `form:"type" binding:"required,oneof=web api"`
 	AliasName string `form:"alias_name" binding:"required,min=1,max=30"`
 	Name      string `form:"name" binding:"required,min=1,max=30"`
 	Status    string `form:"status" binding:"required,oneof=y n"`
@@ -19,9 +19,9 @@ type ValidateAiModelUpdate struct {
 
 // ValidateAiModelList AI 模型获取列表验证。
 type ValidateAiModelList struct {
-	Type     uint  `form:"type" binding:"required,oneof=1 2"`
-	Page     int64 `form:"page" binding:"numeric"`
-	PageSize int64 `form:"page_size" binding:"numeric"`
+	Type     string `form:"type" binding:"required,oneof=web api"`
+	Page     int64  `form:"page" binding:"numeric"`
+	PageSize int64  `form:"page_size" binding:"numeric"`
 }
 
 // ValidateAiModelDelete AI 模型删除验证。

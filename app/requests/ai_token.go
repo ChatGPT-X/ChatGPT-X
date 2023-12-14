@@ -2,7 +2,7 @@ package requests
 
 // ValidateAiTokenCreate AI 密钥创建验证。
 type ValidateAiTokenCreate struct {
-	Type   uint   `form:"type" binding:"required,oneof=1 2"`
+	Type   string `form:"type" binding:"required,oneof=access_token api_key"`
 	Token  string `form:"token" binding:"required,min=1,max=2000"`
 	Remark string `form:"remark" binding:"min=1,max=255"`
 	Status string `form:"status" binding:"required,oneof=y n"`
@@ -11,7 +11,7 @@ type ValidateAiTokenCreate struct {
 // ValidateAiTokenUpdate AI 密钥更新验证。
 type ValidateAiTokenUpdate struct {
 	ID     uint   `form:"id" binding:"required,numeric"`
-	Type   uint   `form:"type" binding:"required,oneof=1 2"`
+	Type   string `form:"type" binding:"required,oneof=access_token api_key"`
 	Token  string `form:"token" binding:"required,min=1,max=2000"`
 	Remark string `form:"remark" binding:"min=1,max=255"`
 	Status string `form:"status" binding:"required,oneof=y n"`

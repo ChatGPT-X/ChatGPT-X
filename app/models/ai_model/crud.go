@@ -32,9 +32,9 @@ func (m *AiModel) Delete() (rowsAffected int64, err error) {
 }
 
 // List 获取 AI 模型列表。
-func (m *AiModel) List(aiModelType uint, page, pageSize int64) (any, error) {
+func (m *AiModel) List(aiModelType string, page, pageSize int64) (any, error) {
 	db := model.DB
-	if aiModelType != 0 {
+	if aiModelType != "" {
 		db = db.Where("type = ?", aiModelType)
 	}
 	p := paginator.Page[AiModel]{
