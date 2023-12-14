@@ -1,6 +1,7 @@
 package openai_service
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 )
@@ -21,7 +22,42 @@ func (s *WebService) Conversation(userID uint, body any) (<-chan []byte, error) 
 	if err != nil {
 		return nil, err
 	}
-	return ch, nil
+	conversationID, hookedCh := s.hookConversationID(ch)
+	fmt.Println(conversationID)
+	return hookedCh, nil
+}
+
+// hookConversationID 从数据包中提取 conversation_id。
+func (s *WebService) hookConversationID(ch <-chan []byte) (string, <-chan []byte) {
+	type conversationID struct {
+		ConversationID string `json:"conversation_id"`
+	}
+	count := 3
+	hookedCh := make(chan []byte, count)
+	var jsonData conversationID
+	// 同步处理前 count 个数据包，hook 拿 conversation_id
+	for count > 0 {
+		data, ok := <-ch
+		if !ok {
+			break
+		}
+		err := json.Unmarshal(data, &jsonData)
+		if err != nil || (err == nil && jsonData.ConversationID == "") {
+			hookedCh <- data
+			count--
+			continue
+		}
+		hookedCh <- data
+		break
+	}
+	// 异步处理剩余的数据包
+	go func() {
+		defer close(hookedCh)
+		for data := range ch {
+			hookedCh <- data
+		}
+	}()
+	return jsonData.ConversationID, hookedCh
 }
 
 // GetConversationHistory 获取对话历史。
