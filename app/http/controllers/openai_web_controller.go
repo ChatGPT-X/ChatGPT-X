@@ -6,7 +6,6 @@ import (
 	"chatgpt_x/pkg/e"
 	"chatgpt_x/pkg/logger"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -37,7 +36,7 @@ func (ow *OpenaiWebController) Conversation(c *gin.Context) {
 		return
 	}
 	for b := range ch {
-		fmt.Fprintf(c.Writer, "%s\n\n", string(b))
+		c.SSEvent("", string(b))
 	}
 }
 

@@ -1,6 +1,7 @@
 package openai_service
 
 import (
+	"bufio"
 	"bytes"
 	"chatgpt_x/app/models/ai_model"
 	"chatgpt_x/app/models/ai_token"
@@ -114,9 +115,7 @@ func SendRequest(reqType, method, url string, headers map[string]string, body an
 	if err != nil {
 		return "", err
 	}
-	request := client.R().SetContext(context.Background())
-	request = request.SetHeaders(headers)
-	request = request.SetBody(body)
+	request := client.R().SetContext(context.Background()).SetHeaders(headers).SetBody(body)
 	resp, err := request.Send(method, url)
 	if err != nil {
 		return "", err
@@ -132,9 +131,7 @@ func SendStreamRequest(reqType, method, url string, headers map[string]string, b
 	if err != nil {
 		return nil, err
 	}
-	request := client.R().SetContext(context.Background())
-	request = request.SetHeaders(headers)
-	request = request.SetBody(body)
+	request := client.R().SetContext(context.Background()).SetHeaders(headers).SetBody(body)
 	resp, err := request.Send(method, url)
 	if err != nil {
 		return nil, err
@@ -142,32 +139,23 @@ func SendStreamRequest(reqType, method, url string, headers map[string]string, b
 	ch := make(chan []byte)
 	go func() {
 		defer close(ch)
-		reader := resp.Response.Body
-		defer reader.Close()
-		var buffer bytes.Buffer
+		reader := bufio.NewReaderSize(resp.Response.Body, 2048)
+		defer resp.Body.Close()
 		for {
-			buf := make([]byte, 1) // 1 byte per read
-			n, err := reader.Read(buf)
+			data, err := reader.ReadBytes('\n')
 			if err == io.EOF {
-				if buffer.Len() > 0 {
-					//fmt.Println(buffer.String())
-					ch <- buffer.Bytes()
-				}
 				break
 			}
 			if err != nil {
 				logger.Error("read response body error: ", err)
-				break
+				return
 			}
-			if buf[0] == '\n' {
-				if buffer.Len() > 0 {
-					//fmt.Println(buffer.String())
-					ch <- buffer.Bytes()
-				}
-				buffer.Reset()
-				continue
+			// 修正数据后发送
+			data = bytes.TrimLeft(data, "data: ")
+			data = bytes.TrimRight(data, "\n")
+			if len(data) > 0 {
+				ch <- data
 			}
-			buffer.Write(buf[:n])
 		}
 	}()
 	return ch, nil
