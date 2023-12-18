@@ -20,19 +20,17 @@ import (
 
 var ctx = context.Background()
 
-func GetBasicHeaders(userID uint, isEventStream bool) (map[string]string, error) {
-	// 获取当前用户的 token
-	aiTokenModel, err := GetAiTokenFromUser(userID)
-	if err != nil {
-		return nil, err
-	}
+// GetBasicHeaders 获取基础请求头。
+func GetBasicHeaders(aiToken string, isEventStream bool) (map[string]string, error) {
 	headers := map[string]string{
-		"Authorization": "Bearer " + aiTokenModel.Token,
-		"Content-Type":  "application/json; charset=utf-8",
-		"User-Agent":    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-		"Referer":       "https://chat.openai.com",
-		"Origin":        "https://chat.openai.com",
-		"Cache-Control": "no-cache",
+		"Authorization":   "Bearer " + aiToken,
+		"Content-Type":    "application/json; charset=utf-8",
+		"User-Agent":      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+		"Referer":         "https://chat.openai.com",
+		"Origin":          "https://chat.openai.com",
+		"Cache-Control":   "no-cache",
+		"Pragma":          "no-cache",
+		"Accept-Language": "en-US",
 	}
 	if isEventStream {
 		headers["Accept"] = "text/event-stream"
@@ -135,6 +133,9 @@ func SendStreamRequest(reqType, method, url string, headers map[string]string, b
 	resp, err := request.Send(method, url)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("response status code: %d", resp.StatusCode)
 	}
 	ch := make(chan []byte)
 	go func() {

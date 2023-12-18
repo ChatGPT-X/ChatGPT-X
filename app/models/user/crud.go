@@ -63,7 +63,7 @@ func HasByUsernameExist(username string) bool {
 	return count != 0
 }
 
-// GetByUsername 通过 Username 获取用户信息。
+// GetByUsername 根据 Username 获取用户信息。
 func GetByUsername(username string) (User, error) {
 	var user User
 	if err := model.DB.Where("username = ?", username).First(&user).Error; err != nil {
