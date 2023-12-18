@@ -61,8 +61,8 @@ func GetAiTokenFromUser(userID uint) (ai_token.AiToken, error) {
 	return aiTokenModel, nil
 }
 
-// clintSetting 设置客户端（基础地址、代理、超时时间等）。
-func clintSetting(reqType string, client *req.Client) (*req.Client, error) {
+// clientSetting 设置客户端（基础地址、代理、超时时间等）。
+func clientSetting(reqType string, client *req.Client) (*req.Client, error) {
 	rdb := rds.RDB
 	var baseurl, proxy, timeout string
 	switch reqType {
@@ -109,7 +109,7 @@ func clintSetting(reqType string, client *req.Client) (*req.Client, error) {
 // SendRequest 发送常规请求。
 func SendRequest(reqType, method, url string, headers map[string]string, body any) (string, error) {
 	client := req.C()
-	client, err := clintSetting(reqType, client)
+	client, err := clientSetting(reqType, client)
 	if err != nil {
 		return "", err
 	}
@@ -125,7 +125,7 @@ func SendRequest(reqType, method, url string, headers map[string]string, body an
 // SendStreamRequest 发送流式请求。
 func SendStreamRequest(reqType, method, url string, headers map[string]string, body any) (<-chan []byte, error) {
 	client := req.C()
-	client, err := clintSetting(reqType, client)
+	client, err := clientSetting(reqType, client)
 	if err != nil {
 		return nil, err
 	}
