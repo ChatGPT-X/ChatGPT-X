@@ -39,7 +39,7 @@ func (ow *OpenaiWebController) Conversation(c *gin.Context) {
 	case "application/json", "application/json; charset=utf-8":
 		var result any
 		_ = json.Unmarshal(respResult.Body, &result)
-		appG.ResponseWithOpenai(respResult.StatusCode, string(respResult.Body))
+		c.JSON(respResult.StatusCode, result)
 		return
 	// 正常是 event-stream 流式传输
 	case "text/event-stream", "text/event-stream; charset=utf-8":
