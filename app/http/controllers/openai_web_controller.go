@@ -87,6 +87,7 @@ func (ow *OpenaiWebController) ChangeConversationTitle(c *gin.Context) {
 		appG.ResponseWithOpenai(http.StatusInternalServerError, e.GetMsg(e.ErrorOpenaiInvalidParams))
 		return
 	}
+	// 修改对话标题
 	userID := getUserID(c)
 	openaiService := openai_service.WebService{}
 	respResult, err := openaiService.ChangeConversationTitle(userID, params.ConversationID, paramsJson)

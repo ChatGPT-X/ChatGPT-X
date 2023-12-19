@@ -19,10 +19,20 @@ func (m *Conversation) Update() (rowsAffected int64, err error) {
 	return result.RowsAffected, nil
 }
 
-// Get 根据 ID 获取对话记录。
-func Get(id string) (Conversation, error) {
+// CreateOrUpdate 记录存在则更新，记录不存在则创建。
+func (m *Conversation) CreateOrUpdate() (err error) {
+	return model.DB.Where(Conversation{ConversationID: m.ConversationID}).
+		Assign(m).
+		Omit("id").
+		FirstOrCreate(&Conversation{}).Error
+}
+
+// Get 根据 conversationID 获取对话记录。
+func Get(conversationID string) (Conversation, error) {
 	var conversation Conversation
-	if err := model.DB.Where("id = ?", id).First(&conversation).Error; err != nil {
+	if err := model.DB.
+		Where("conversation_id = ?", conversationID).
+		First(&conversation).Error; err != nil {
 		return Conversation{}, err
 	}
 	return conversation, nil

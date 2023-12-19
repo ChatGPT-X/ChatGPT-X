@@ -3,34 +3,17 @@ package openai_service
 import (
 	"chatgpt_x/app/models/conversation"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"gorm.io/gorm"
+	"net/http"
 	"strconv"
-	"time"
 )
 
 // WebService OPENAI WEB 接口服务。
 type WebService struct{}
 
 // Save 保存对话记录，如果不存在则创建，存在则更新
-func (s *WebService) Save(paramsModel conversation.Conversation) error {
-	conversationModel, err := conversation.Get(paramsModel.ID)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return err
-	}
-	// 对话信息不存在则创建，存在则更新
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		if err = paramsModel.Create(); err != nil {
-			return err
-		}
-		return nil
-	}
-	conversationModel.UpdateTime = time.Now()
-	if _, err = conversationModel.Update(); err != nil {
-		return err
-	}
-	return nil
+func (s *WebService) Save(conversationModel conversation.Conversation) error {
+	return conversationModel.CreateOrUpdate()
 }
 
 // Conversation 平台对话。
@@ -57,13 +40,13 @@ func (s *WebService) Conversation(userID uint, body any) (*ResponseResult, error
 		conversationID, hookedCh := s.hookConversationID(respResult.BodyStream)
 		respResult.BodyStream = hookedCh
 		err = s.Save(conversation.Conversation{
-			ID:        conversationID,
-			UserID:    userID,
-			AiTokenID: &aiTokenModel.ID,
-			Type:      conversation.TypeWeb,
-			ModelName: aiModelName.(string),
-			Title:     "New chat",
-			Status:    conversation.StatusEnable,
+			UserID:            userID,
+			AiTokenID:         &aiTokenModel.ID,
+			Type:              conversation.TypeWeb,
+			ModelName:         aiModelName.(string),
+			ConversationID:    conversationID,
+			ConversationTitle: "New chat",
+			Status:            conversation.StatusEnable,
 		})
 		if err != nil {
 			return nil, err
@@ -133,9 +116,19 @@ func (s *WebService) ChangeConversationTitle(userID uint, conversationID string,
 	// 获取当前用户的 token
 	headers := GetBasicHeaders(aiTokenModel.Token, false)
 	// 发送请求
-	result, err := SendRequest("web", "PATCH", url, headers, body)
+	respResult, err := SendRequest("web", "PATCH", url, headers, body)
 	if err != nil {
 		return nil, err
 	}
-	return result, nil
+	if respResult.StatusCode == http.StatusOK {
+		title, ok := body.(map[string]any)["title"]
+		if !ok {
+			return nil, fmt.Errorf("title is not exist")
+		}
+		err = s.Save(conversation.Conversation{
+			ConversationID:    conversationID,
+			ConversationTitle: title.(string),
+		})
+	}
+	return respResult, nil
 }
