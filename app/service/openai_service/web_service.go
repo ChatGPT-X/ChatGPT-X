@@ -34,7 +34,7 @@ func (s *WebService) Save(paramsModel conversation.Conversation) error {
 }
 
 // Conversation 平台对话。
-func (s *WebService) Conversation(userID uint, body any) (<-chan []byte, error) {
+func (s *WebService) Conversation(userID uint, body any) (*ResponseResult, error) {
 	url := "/backend-api/conversation"
 	aiModelName, ok := body.(map[string]any)["model"]
 	if !ok {
@@ -45,34 +45,35 @@ func (s *WebService) Conversation(userID uint, body any) (<-chan []byte, error) 
 		return nil, err
 	}
 	// 获取 headers
-	headers, err := GetBasicHeaders(aiTokenModel.Token, true)
-	if err != nil {
-		return nil, err
-	}
+	headers := GetBasicHeaders(aiTokenModel.Token, true)
 	// 发送请求
-	ch, err := SendStreamRequest("web", "POST", url, headers, body)
+	respResult, err := SendStreamRequest("web", "POST", url, headers, body)
 	if err != nil {
-		return nil, err
+		return respResult, err
 	}
-	// 存储对话记录
-	conversationID, hookedCh := s.hookConversationID(ch)
-	err = s.Save(conversation.Conversation{
-		ID:        conversationID,
-		UserID:    userID,
-		AiTokenID: &aiTokenModel.ID,
-		Type:      conversation.TypeWeb,
-		ModelName: aiModelName.(string),
-		Title:     "New chat",
-		Status:    conversation.StatusEnable,
-	})
-	if err != nil {
-		return nil, err
+	switch respResult.BodyType {
+	case "text/event-stream", "text/event-stream; charset=utf-8":
+		// 存储对话记录
+		conversationID, hookedCh := s.hookConversationID(respResult.BodyStream)
+		respResult.BodyStream = hookedCh
+		err = s.Save(conversation.Conversation{
+			ID:        conversationID,
+			UserID:    userID,
+			AiTokenID: &aiTokenModel.ID,
+			Type:      conversation.TypeWeb,
+			ModelName: aiModelName.(string),
+			Title:     "New chat",
+			Status:    conversation.StatusEnable,
+		})
+		if err != nil {
+			return nil, err
+		}
 	}
-	return hookedCh, nil
+	return respResult, nil
 }
 
-// hookConversationInfo 从数据包中提取 conversation_id。
-func (s *WebService) hookConversationID(ch <-chan []byte) (string, <-chan []byte) {
+// hookConversationID 从数据包中提取 conversation_id。
+func (s *WebService) hookConversationID(ch <-chan []byte) (string, chan []byte) {
 	type conversationID struct {
 		ConversationID string `json:"conversation_id"`
 	}
@@ -105,42 +106,36 @@ func (s *WebService) hookConversationID(ch <-chan []byte) (string, <-chan []byte
 }
 
 // GetConversationHistory 获取对话历史。
-func (s *WebService) GetConversationHistory(userID uint, offset, limit int) (string, error) {
+func (s *WebService) GetConversationHistory(userID uint, offset, limit int) (*ResponseResult, error) {
 	url := "/backend-api/conversations?offset=%s&limit=%s&order=updated"
 	url = fmt.Sprintf(url, strconv.Itoa(offset), strconv.Itoa(limit))
 	aiTokenModel, err := GetAiTokenFromUser(userID)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	// 获取 headers
-	header, err := GetBasicHeaders(aiTokenModel.Token, false)
-	if err != nil {
-		return "", err
-	}
+	header := GetBasicHeaders(aiTokenModel.Token, false)
 	// 发送请求
-	result, err := SendRequest("web", "GET", url, header, nil)
+	respResult, err := SendRequest("web", "GET", url, header, nil)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return result, nil
+	return respResult, nil
 }
 
 // ChangeConversationTitle 修改对话标题。
-func (s *WebService) ChangeConversationTitle(userID uint, conversationID string, body any) (string, error) {
+func (s *WebService) ChangeConversationTitle(userID uint, conversationID string, body any) (*ResponseResult, error) {
 	url := "/backend-api/conversation/" + conversationID
 	aiTokenModel, err := GetAiTokenFromUser(userID)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	// 获取当前用户的 token
-	headers, err := GetBasicHeaders(aiTokenModel.Token, false)
-	if err != nil {
-		return "", err
-	}
+	headers := GetBasicHeaders(aiTokenModel.Token, false)
 	// 发送请求
 	result, err := SendRequest("web", "PATCH", url, headers, body)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	return result, nil
 }

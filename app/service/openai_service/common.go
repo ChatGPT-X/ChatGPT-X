@@ -21,7 +21,7 @@ import (
 var ctx = context.Background()
 
 // GetBasicHeaders 获取基础请求头。
-func GetBasicHeaders(aiToken string, isEventStream bool) (map[string]string, error) {
+func GetBasicHeaders(aiToken string, isEventStream bool) map[string]string {
 	headers := map[string]string{
 		"Authorization":   "Bearer " + aiToken,
 		"Content-Type":    "application/json; charset=utf-8",
@@ -35,7 +35,7 @@ func GetBasicHeaders(aiToken string, isEventStream bool) (map[string]string, err
 	if isEventStream {
 		headers["Accept"] = "text/event-stream"
 	}
-	return headers, nil
+	return headers
 }
 
 // GetAiTokenFromUser 根据用户 ID 获取 AI 密钥。
@@ -107,57 +107,95 @@ func clientSetting(reqType string, client *req.Client) (*req.Client, error) {
 }
 
 // SendRequest 发送常规请求。
-func SendRequest(reqType, method, url string, headers map[string]string, body any) (string, error) {
+func SendRequest(reqType, method, url string, headers map[string]string, body any) (*ResponseResult, error) {
 	client := req.C()
 	client, err := clientSetting(reqType, client)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	request := client.R().SetContext(context.Background()).SetHeaders(headers).SetBody(body)
-	resp, err := request.Send(method, url)
+	resp, err := client.R().
+		SetContext(context.Background()).
+		SetHeaders(headers).
+		SetBody(body).
+		Send(method, url)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer resp.Body.Close()
-	return resp.String(), nil
+	responseResult := &ResponseResult{
+		StatusCode: resp.StatusCode,
+		BodyType:   resp.Header.Get("Content-Type"),
+		BodyStream: nil,
+		Body:       resp.Bytes(),
+	}
+	return responseResult, nil
+}
+
+// ResponseResult 包含响应的状态码、响应体类型和响应体。
+type ResponseResult struct {
+	StatusCode int
+	BodyType   string
+	BodyStream chan []byte // 用于流式响应
+	Body       []byte      // 用于普通响应
 }
 
 // SendStreamRequest 发送流式请求。
-func SendStreamRequest(reqType, method, url string, headers map[string]string, body any) (<-chan []byte, error) {
+// 修改后的函数现在返回一个包含状态码、响应体类型和响应体的结构体。
+func SendStreamRequest(reqType, method, url string, headers map[string]string, body any) (*ResponseResult, error) {
 	client := req.C()
 	client, err := clientSetting(reqType, client)
 	if err != nil {
 		return nil, err
 	}
-	request := client.R().SetContext(context.Background()).SetHeaders(headers).SetBody(body)
-	resp, err := request.Send(method, url)
+	resp, err := client.R().
+		SetContext(context.Background()).
+		SetHeaders(headers).
+		SetBody(body).
+		Send(method, url)
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("response status code: %d", resp.StatusCode)
+
+	responseResult := &ResponseResult{
+		StatusCode: resp.StatusCode,
+		BodyType:   resp.Header.Get("Content-Type"),
+		BodyStream: make(chan []byte),
+		Body:       nil,
 	}
-	ch := make(chan []byte)
-	go func() {
-		defer close(ch)
-		reader := bufio.NewReaderSize(resp.Response.Body, 2048)
-		defer resp.Body.Close()
-		for {
-			data, err := reader.ReadBytes('\n')
-			if err == io.EOF {
-				break
-			}
-			if err != nil {
-				logger.Error("read response body error: ", err)
-				return
-			}
-			// 修正数据后发送
-			data = bytes.TrimLeft(data, "data: ")
-			data = bytes.TrimRight(data, "\n")
-			if len(data) > 0 {
-				ch <- data
-			}
+	// 根据响应类型处理响应体
+	switch resp.Header.Get("Content-Type") {
+	case "application/json", "application/json; charset=utf-8":
+		bodyBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
 		}
-	}()
-	return ch, nil
+		responseResult.Body = bodyBytes
+		responseResult.BodyStream = nil
+	case "text/event-stream", "text/event-stream; charset=utf-8":
+		go handleStreamResponse(resp, responseResult.BodyStream)
+	}
+	return responseResult, nil
+}
+
+// handleStreamResponse 处理流式响应。
+func handleStreamResponse(resp *req.Response, bodyStream chan []byte) {
+	defer close(bodyStream)
+	reader := bufio.NewReaderSize(resp.Response.Body, 2048)
+	defer resp.Body.Close()
+	for {
+		data, err := reader.ReadBytes('\n')
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			logger.Error("read response body error: ", err)
+			return
+		}
+		// 修正数据后发送
+		data = bytes.TrimLeft(data, "data: ")
+		data = bytes.TrimRight(data, "\n")
+		if len(data) > 0 {
+			bodyStream <- data
+		}
+	}
 }

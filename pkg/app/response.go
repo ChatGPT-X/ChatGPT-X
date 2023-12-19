@@ -27,6 +27,10 @@ type ResponseDataList struct {
 	Count     int64       `json:"count"`      // 总共有多少条数据
 }
 
+type DetailOpenai struct {
+	Detail string `json:"detail"`
+}
+
 // Response 设置 gin.JSON.
 func (g *Gin) Response(httpCode, errCode int, err error, data interface{}) {
 	if err != nil {
@@ -37,6 +41,12 @@ func (g *Gin) Response(httpCode, errCode int, err error, data interface{}) {
 		Msg:  e.GetMsg(errCode),
 		Data: data,
 	})
+}
+
+// ResponseWithOpenai 使用 OpenAI 的错误数据格式。
+func (g *Gin) ResponseWithOpenai(httpCode int, detail string) {
+	logger.Error(fmt.Sprintf("ResponseWithOpenai httpCode: %d, detail: %s\n", httpCode, detail))
+	g.C.JSON(httpCode, DetailOpenai{detail})
 }
 
 // SetAuthorization 设置 JWT Authorization.
