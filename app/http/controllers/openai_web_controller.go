@@ -3,6 +3,7 @@ package controllers
 import (
 	"chatgpt_x/app/requests"
 	"chatgpt_x/app/service/openai_service"
+	"chatgpt_x/pkg/e"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -20,14 +21,14 @@ func (ow *OpenaiWebController) Conversation(c *gin.Context) {
 	var paramsJson any
 	err := c.ShouldBindJSON(&paramsJson)
 	if err != nil {
-		appG.ResponseWithOpenai(http.StatusInternalServerError, "Params error, please contact the developer.")
+		appG.ResponseWithOpenai(http.StatusInternalServerError, e.GetMsg(e.ErrorOpenaiInvalidParams))
 		return
 	}
 	userID := getUserID(c)
 	openaiService := openai_service.WebService{}
 	respResult, err := openaiService.Conversation(userID, paramsJson)
 	if err != nil {
-		appG.ResponseWithOpenai(http.StatusInternalServerError, "OpenAI error, please wait and try again.")
+		appG.ResponseWithOpenai(http.StatusInternalServerError, e.GetMsg(e.ErrorOpenaiRequestFail))
 		return
 	}
 	c.Header("Connection", "keep-alive")
@@ -54,7 +55,7 @@ func (ow *OpenaiWebController) GetConversationHistory(c *gin.Context) {
 	// 接收参数
 	var params requests.ValidateGetConversationHistory
 	if err := c.ShouldBindQuery(&params); err != nil {
-		appG.ResponseWithOpenai(http.StatusInternalServerError, "Params error, please contact the developer.")
+		appG.ResponseWithOpenai(http.StatusInternalServerError, e.GetMsg(e.ErrorOpenaiInvalidParams))
 		return
 	}
 	SetDefaultValue(&params.Offset, 0)
@@ -63,7 +64,7 @@ func (ow *OpenaiWebController) GetConversationHistory(c *gin.Context) {
 	openaiService := openai_service.WebService{}
 	respResult, err := openaiService.GetConversationHistory(userID, params.Offset, params.Limit)
 	if err != nil {
-		appG.ResponseWithOpenai(http.StatusInternalServerError, "OpenAI error, please wait and try again.")
+		appG.ResponseWithOpenai(http.StatusInternalServerError, e.GetMsg(e.ErrorOpenaiRequestFail))
 		return
 	}
 	var result any
@@ -77,20 +78,20 @@ func (ow *OpenaiWebController) ChangeConversationTitle(c *gin.Context) {
 	// 接收参数
 	var params requests.ValidateUUIDv4
 	if err := c.ShouldBindUri(&params); err != nil {
-		appG.ResponseWithOpenai(http.StatusInternalServerError, "Params error, please contact the developer.")
+		appG.ResponseWithOpenai(http.StatusInternalServerError, e.GetMsg(e.ErrorOpenaiInvalidParams))
 		return
 	}
 	var paramsJson any
 	err := c.ShouldBindJSON(&paramsJson)
 	if err != nil {
-		appG.ResponseWithOpenai(http.StatusInternalServerError, "Params error, please contact the developer.")
+		appG.ResponseWithOpenai(http.StatusInternalServerError, e.GetMsg(e.ErrorOpenaiInvalidParams))
 		return
 	}
 	userID := getUserID(c)
 	openaiService := openai_service.WebService{}
 	respResult, err := openaiService.ChangeConversationTitle(userID, params.ConversationID, paramsJson)
 	if err != nil {
-		appG.ResponseWithOpenai(http.StatusInternalServerError, "OpenAI error, please wait and try again.")
+		appG.ResponseWithOpenai(http.StatusInternalServerError, e.GetMsg(e.ErrorOpenaiRequestFail))
 		return
 	}
 	var result any
