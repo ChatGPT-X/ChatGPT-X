@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
+	"time"
 )
 
 // WebService OPENAI WEB 接口服务。
@@ -13,6 +13,7 @@ type WebService struct{}
 
 // Save 保存对话记录，如果不存在则创建，存在则更新
 func (s *WebService) Save(conversationModel conversation.Conversation) error {
+	// 检查是否已经存在
 	return conversationModel.CreateOrUpdate()
 }
 
@@ -47,6 +48,7 @@ func (s *WebService) Conversation(userID uint, body any) (*ResponseResult, error
 			ConversationID:    conversationID,
 			ConversationTitle: "New chat",
 			Status:            conversation.StatusEnable,
+			UpdateTime:        time.Now(),
 		})
 		if err != nil {
 			return nil, err
@@ -88,22 +90,29 @@ func (s *WebService) hookConversationID(ch <-chan []byte) (string, chan []byte) 
 	return jsonData.ConversationID, hookedCh
 }
 
+// ConversationHistory 对话历史接口要返回的结构。
+type ConversationHistory struct {
+	HasMissingConversations bool                        `json:"has_missing_conversations"`
+	Items                   []conversation.Conversation `json:"items"`
+	Limit                   int                         `json:"limit"`
+	Offset                  int                         `json:"offset"`
+	Total                   int64                       `json:"total"`
+}
+
 // GetConversationHistory 获取对话历史。
-func (s *WebService) GetConversationHistory(userID uint, offset, limit int) (*ResponseResult, error) {
-	url := "/backend-api/conversations?offset=%s&limit=%s&order=updated"
-	url = fmt.Sprintf(url, strconv.Itoa(offset), strconv.Itoa(limit))
-	aiTokenModel, err := GetAiTokenFromUser(userID)
+func (s *WebService) GetConversationHistory(userID uint, offset, limit int) (ConversationHistory, error) {
+	history, count, err := conversation.List(offset, limit, userID, conversation.StatusEnable)
 	if err != nil {
-		return nil, err
+		return ConversationHistory{}, err
 	}
-	// 获取 headers
-	header := GetBasicHeaders(aiTokenModel.Token, false)
-	// 发送请求
-	respResult, err := SendRequest("web", "GET", url, header, nil)
-	if err != nil {
-		return nil, err
+	conversationHistory := ConversationHistory{
+		HasMissingConversations: false,
+		Items:                   history,
+		Limit:                   limit,
+		Offset:                  offset,
+		Total:                   count,
 	}
-	return respResult, nil
+	return conversationHistory, nil
 }
 
 // ChangeConversationTitle 修改对话标题。
@@ -120,15 +129,19 @@ func (s *WebService) ChangeConversationTitle(userID uint, conversationID string,
 	if err != nil {
 		return nil, err
 	}
+	// 如果请求成功则更新对话标题
 	if respResult.StatusCode == http.StatusOK {
 		title, ok := body.(map[string]any)["title"]
 		if !ok {
 			return nil, fmt.Errorf("title is not exist")
 		}
-		err = s.Save(conversation.Conversation{
+		conversationModel := conversation.Conversation{
 			ConversationID:    conversationID,
 			ConversationTitle: title.(string),
-		})
+		}
+		if _, err = conversationModel.UpdateByConversationID(); err != nil {
+			return nil, err
+		}
 	}
 	return respResult, nil
 }

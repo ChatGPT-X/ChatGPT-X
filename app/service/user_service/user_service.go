@@ -16,7 +16,7 @@ type UserService struct{}
 // DoRegister 用户注册。
 func (s *UserService) DoRegister(paramsModel user.User) e.ErrInfo {
 	// 检查该用户是否已经存在
-	if user.HasByUsernameExist(paramsModel.Username) {
+	if user.HasUsernameExist(paramsModel.Username) {
 		return e.ErrInfo{
 			Code: e.ErrorUserIsExist,
 			Msg:  fmt.Errorf("username: %s is exist", paramsModel.Username),
@@ -81,8 +81,7 @@ func (s *UserService) DoLogin(paramsModel user.User) (string, e.ErrInfo) {
 
 // List 获取用户列表。
 func (s *UserService) List(page, pageSize int64) (paginator.Page[user.User], e.ErrInfo) {
-	userModel := user.User{}
-	pageData, err := userModel.List(page, pageSize)
+	pageData, err := user.List(page, pageSize)
 	if err != nil {
 		return paginator.Page[user.User]{}, e.ErrInfo{
 			Code: e.ErrorUserSelectListFail,

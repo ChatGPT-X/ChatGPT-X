@@ -32,7 +32,7 @@ func (m *AiToken) Delete() (rowsAffected int64, err error) {
 }
 
 // List 获取密钥列表。
-func (m *AiToken) List(page, pageSize int64) (any, error) {
+func List(page, pageSize int64) (any, error) {
 	db := model.DB
 	p := paginator.Page[AiToken]{
 		CurrentPage: page,

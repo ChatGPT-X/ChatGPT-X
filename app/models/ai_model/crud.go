@@ -32,7 +32,7 @@ func (m *AiModel) Delete() (rowsAffected int64, err error) {
 }
 
 // List 获取 AI 模型列表。
-func (m *AiModel) List(aiModelType string, page, pageSize int64) (any, error) {
+func List(aiModelType string, page, pageSize int64) (any, error) {
 	db := model.DB
 	if aiModelType != "" {
 		db = db.Where("type = ?", aiModelType)

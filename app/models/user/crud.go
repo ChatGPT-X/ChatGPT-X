@@ -33,7 +33,7 @@ func (m *User) Delete() (rowsAffected int64, err error) {
 }
 
 // List 获取用户列表。
-func (m *User) List(page, pageSize int64) (any, error) {
+func List(page, pageSize int64) (any, error) {
 	db := model.DB.Omit("password")
 	p := paginator.Page[User]{
 		CurrentPage: page,
@@ -55,8 +55,8 @@ func Get(id uint) (User, error) {
 	return user, nil
 }
 
-// HasByUsernameExist 通过 Username 判断用户是否存在，存在返回 true，不存在返回 false。
-func HasByUsernameExist(username string) bool {
+// HasUsernameExist 通过 Username 判断用户是否存在，存在返回 true，不存在返回 false。
+func HasUsernameExist(username string) bool {
 	var user User
 	var count int64
 	model.DB.Model(user).Where("username = ?", username).Count(&count)

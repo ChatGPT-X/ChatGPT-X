@@ -64,8 +64,7 @@ func (s *AiModelService) Update(paramsModel ai_model.AiModel) (int64, e.ErrInfo)
 
 // List 获取 AI 模型列表。
 func (s *AiModelService) List(aiModelType string, page, pageSize int64) (paginator.Page[ai_model.AiModel], e.ErrInfo) {
-	aiModel := ai_model.AiModel{}
-	pageData, err := aiModel.List(aiModelType, page, pageSize)
+	pageData, err := ai_model.List(aiModelType, page, pageSize)
 	if err != nil {
 		return paginator.Page[ai_model.AiModel]{}, e.ErrInfo{
 			Code: e.ErrorAiModelSelectListFail,

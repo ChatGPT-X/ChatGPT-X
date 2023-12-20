@@ -64,8 +64,7 @@ func (s *AiTokenService) Update(paramsModel ai_token.AiToken) (int64, e.ErrInfo)
 
 // List 获取 AI 密钥列表。
 func (s *AiTokenService) List(page, pageSize int64) (paginator.Page[ai_token.AiToken], e.ErrInfo) {
-	aiTokenModel := ai_token.AiToken{}
-	pageData, err := aiTokenModel.List(page, pageSize)
+	pageData, err := ai_token.List(page, pageSize)
 	if err != nil {
 		return paginator.Page[ai_token.AiToken]{}, e.ErrInfo{
 			Code: e.ErrorAiTokenSelectListFail,

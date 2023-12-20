@@ -62,14 +62,12 @@ func (ow *OpenaiWebController) GetConversationHistory(c *gin.Context) {
 	SetDefaultValue(&params.Limit, 28)
 	userID := getUserID(c)
 	openaiService := openai_service.WebService{}
-	respResult, err := openaiService.GetConversationHistory(userID, params.Offset, params.Limit)
+	result, err := openaiService.GetConversationHistory(userID, params.Offset, params.Limit)
 	if err != nil {
 		appG.ResponseWithOpenai(http.StatusInternalServerError, e.GetMsg(e.ErrorOpenaiRequestFail))
 		return
 	}
-	var result any
-	_ = json.Unmarshal(respResult.Body, &result)
-	c.JSON(respResult.StatusCode, result)
+	c.JSON(http.StatusOK, result)
 }
 
 // ChangeConversationTitle 修改对话标题。

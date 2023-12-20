@@ -6,6 +6,6 @@ import (
 
 // BeforeSave GORM 的钩子，在保存和更新模型前调用。
 func (m *Conversation) BeforeSave(tx *gorm.DB) error {
-	tx.Statement.Omit("create_time", "update_time")
+	tx.Statement.Omit("create_time")
 	return nil
 }
